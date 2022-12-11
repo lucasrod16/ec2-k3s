@@ -7,20 +7,22 @@ This is a [Pulumi](https://www.pulumi.com/) project that does the following:
     - ssh keypair
 
 - Creates [k3d](https://k3d.io/) cluster on the ec2 instance
-- Establishes an SSH connection to the ec2 instance, ready to run `kubectl` commands against
+- Sets up the cluster for remote access from your local machine
+
+This is built on and for macOS
 
 ## Dependencies
 
 The following dependencies are required to run this:
-- git
+- go `1.19`
 
-- make
-
-- [pulumi cli](https://www.pulumi.com/docs/get-started/install/) -- you will be prompted to create a Pulumi account
+- [pulumi cli](https://www.pulumi.com/docs/get-started/install/) -- `brew install pulumi`
 
 - [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) -- this must be [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) to interact with an AWS account
 
-- [jq](https://stedolan.github.io/jq/download/)
+- [jq](https://stedolan.github.io/jq/download/) -- `brew install jq`
+
+- gsed -- `brew install gsed`
 
 - private ssh key at `~/.ssh/id_rsa` -- generate with `ssh-keygen` and follow prompts
     - You'll need to add your public ssh key to `internal/ec2/ec2.go`
@@ -45,7 +47,7 @@ List Makefile targets
 make help
 ```
 
-Create AWS infrastructure, k3d cluster, and ssh to ec2 instance
+Create AWS infrastructure and k3d cluster
 ```bash
 make all
 ```

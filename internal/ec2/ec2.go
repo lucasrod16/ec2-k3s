@@ -10,9 +10,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// TODO: Copy the kubeconfig file from remote machine to local machine
-
-// Install docker, k3d, and kubectl and create cluster
+// Install docker, k3d, and kubectl
 const userData string = `#!/bin/bash
 	apt-get update
 	apt-get install \
@@ -32,11 +30,12 @@ const userData string = `#!/bin/bash
 	apt-get install -y \
 			docker-ce \
 			docker-ce-cli \
-			containerd.io \
-			docker-compose-plugin
+			containerd.io
+
+	groupadd docker
+	usermod -aG docker ubuntu
 
 	apt-get update
-	apt-get install -y ca-certificates curl
 
 	curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 
@@ -48,11 +47,6 @@ const userData string = `#!/bin/bash
 	apt-get install -y kubectl
 
 	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-	k3d cluster create --servers=1 --agents=3
-	kubeconfig="$(k3d kubeconfig write)"
-	mkdir -p /home/ubuntu/.kube
-	mv "${kubeconfig}" /home/ubuntu/.kube/config
-	chown -R ubuntu:ubuntu /home/ubuntu/.kube/config
 `
 
 func Create() {
@@ -151,18 +145,13 @@ func localIP() []byte {
 		print(err)
 	}
 	defer resp.Body.Close()
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		print(err)
 	}
-
 	trimmedBody := bytes.Trim(body, "\n")
-
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
-
 	fmt.Println(string(cidr))
-
 	return cidr
 }
