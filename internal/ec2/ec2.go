@@ -10,7 +10,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Install docker, k3d, and kubectl
+// Install docker, k3d, and kubectl as user data script during launch of ec2 instance
 const userData string = `#!/bin/bash
 	apt-get update
 	apt-get install \
@@ -56,7 +56,7 @@ func Create() {
 			Description: pulumi.String("Allow all inbound traffic from the workstation IP address only"),
 			Ingress: ec2.SecurityGroupIngressArray{
 				&ec2.SecurityGroupIngressArgs{
-					Description: pulumi.String("All ports and protocols from VPC"),
+					Description: pulumi.String("All ports and protocols from workstation IP"),
 					FromPort:    pulumi.Int(0),
 					ToPort:      pulumi.Int(0),
 					Protocol:    pulumi.String("-1"),
@@ -76,7 +76,7 @@ func Create() {
 				},
 			},
 			Tags: pulumi.StringMap{
-				"Name": pulumi.String("allow all"),
+				"Name": pulumi.String("allow all ports and protocols from workstation IP"),
 			},
 		})
 		if err != nil {
@@ -144,14 +144,18 @@ func localIP() []byte {
 	if err != nil {
 		print(err)
 	}
+
 	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		print(err)
 	}
+
 	trimmedBody := bytes.Trim(body, "\n")
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
+
 	fmt.Println(string(cidr))
 	return cidr
 }
