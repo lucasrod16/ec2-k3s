@@ -14,4 +14,4 @@ create_cluster="k3d cluster create \
 
 
 echo "Creating the k3d cluster on the ec2 instance..."
-ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o IdentitiesOnly=yes ubuntu@"${public_ip}" "${create_cluster}"
+ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes ubuntu@"${public_ip}" "${create_cluster}"
