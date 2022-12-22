@@ -144,14 +144,14 @@ func Create() {
 func localIP() []byte {
 	resp, err := http.Get("https://checkip.amazonaws.com")
 	if err != nil {
-		print(err)
+		panic(err)
 	}
 
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		print(err)
+		panic(err)
 	}
 
 	trimmedBody := bytes.Trim(body, "\n")
@@ -165,7 +165,7 @@ func localIP() []byte {
 func getPublicSSHKey() []byte {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		print(err)
+		panic(err)
 	}
 
 	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
