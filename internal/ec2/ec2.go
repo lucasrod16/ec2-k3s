@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -159,7 +158,7 @@ func localIP() []byte {
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
 
-	fmt.Printf("\nFile Name: %s", cidr)
+	fmt.Printf("\nWorkstation IP address: %s", cidr)
 	return cidr
 }
 
@@ -170,12 +169,10 @@ func getPublicSSHKey() []byte {
 	}
 
 	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
-	keyData, err := ioutil.ReadFile(publicSSHKey)
+	keyData, err := os.ReadFile(publicSSHKey)
 	if err != nil {
 		log.Panicf("Failed reading data from public ssh key: %s", err)
 	}
 
-	fmt.Printf("\nFile Name: %s", publicSSHKey)
-	fmt.Printf("\nData: %s", keyData)
 	return keyData
 }
