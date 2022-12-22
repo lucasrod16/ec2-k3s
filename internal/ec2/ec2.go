@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -86,7 +89,7 @@ func Create() {
 		// Create SSH keypair
 		keypair, err := ec2.NewKeyPair(ctx, "lucas-dev-ssh", &ec2.KeyPairArgs{
 			KeyName:   pulumi.String("ec2-k3d-keypair"),
-			PublicKey: pulumi.String("ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPgLhdRFNkCK/CaRZI9B1EFPf5Ax1NOvhmBN6rKXUNextSIk3t+ZDyN4iv19aUZcr3IhG/8I9AIGV1+n48aZgDyuPh9MgvVeZRXTOpUp15m80RXcTrFUP8ubTESh8BiYee4DfmUcfccXjyB00OT5GK0OXNiWIGPkElpHPnwmRnRQ6bHyx8HJVMKC0MVwZe+RgydylDasUGJm+gE4+4xc+7F587mT+R17IjS4MZkIkIwIApez+euDp8lqtRuH3AGYpQdxkz09WuSRUBwgWOf4FkpB5+NZtDO3of22QJvL/6PZ2numx/llNhTO6ya1VrWpPH4q3ghaxjZy+v/Mh1+QrUx8r1RF6GSs18iKaBFHQin/it1KDSLW6wbHMQgsU9JrolWT93bZkOaahBDYkPvubgnGBEZ9kDDTVVzowUUJ6QNu932JJJk98dp0Q346RumUhAcgVgjenTPwgs6DgMc2q21pY/96vVGyJ87BlhJpkqZlVQMHfqnmCC/1hd8GWFmKU= lucas@Lucass-MacBook-Pro.local"),
+			PublicKey: pulumi.String(getPublicSSHKey()),
 		})
 		if err != nil {
 			return err
@@ -156,6 +159,23 @@ func localIP() []byte {
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
 
-	fmt.Println(string(cidr))
+	fmt.Printf("\nFile Name: %s", cidr)
 	return cidr
+}
+
+func getPublicSSHKey() []byte {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		print(err)
+	}
+
+	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
+	keyData, err := ioutil.ReadFile(publicSSHKey)
+	if err != nil {
+		log.Panicf("Failed reading data from public ssh key: %s", err)
+	}
+
+	fmt.Printf("\nFile Name: %s", publicSSHKey)
+	fmt.Printf("\nData: %s", keyData)
+	return keyData
 }
