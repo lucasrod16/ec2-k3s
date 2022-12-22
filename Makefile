@@ -7,6 +7,10 @@ help: ## Display list of all targets
 .PHONY: all
 all: create-infra wait create-cluster copy-kubeconfig ## Create AWS infrastructure, create k3d cluster, and set up cluster for remote access
 
+.PHONY: connect
+connect: ## Connect to ec2 instance via SSH
+	hack/connect.sh
+
 .PHONY: copy-kubeconfig
 copy-kubeconfig: ## Copy the kubeconfig from the ec2 instance to the local machine for remote access
 	hack/copy-kubeconfig.sh
