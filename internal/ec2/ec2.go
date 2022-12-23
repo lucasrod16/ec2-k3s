@@ -12,45 +12,6 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Install docker, k3d, and kubectl as user data script during launch of ec2 instance
-const userData string = `#!/bin/bash
-	apt-get update
-	apt-get install \
-			ca-certificates \
-			curl \
-			gnupg \
-			lsb-release
-
-	mkdir -p /etc/apt/keyrings
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-	echo \
-	"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-	$(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-	apt-get update
-	apt-get install -y \
-			docker-ce \
-			docker-ce-cli \
-			containerd.io
-
-	groupadd docker
-	usermod -aG docker ubuntu
-
-	apt-get update
-
-	curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-
-	echo \
-		"deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
-		| sudo tee /etc/apt/sources.list.d/kubernetes.list
-
-	apt-get update
-	apt-get install -y kubectl
-
-	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-`
-
 func Create() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		// Create security group
@@ -131,7 +92,7 @@ func Create() {
 				"Cluster-type": pulumi.String("k3d"),
 				"Workload":     pulumi.String("bigbang"),
 			},
-			UserData: pulumi.String(userData),
+			UserData: pulumi.String(getUserDataScript()),
 		})
 		if err != nil {
 			return err
@@ -146,28 +107,24 @@ func localIP() []byte {
 	if err != nil {
 		panic(err)
 	}
-
 	defer resp.Body.Close()
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
-
 	trimmedBody := bytes.Trim(body, "\n")
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
-
 	fmt.Printf("\nWorkstation IP address: %s", cidr)
 	return cidr
 }
 
+// getPublicSSHKey returns the public ssh key at ~/.ssh/id_rsa.pub
 func getPublicSSHKey() []byte {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		panic(err)
 	}
-
 	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
 	keyData, err := os.ReadFile(publicSSHKey)
 	if err != nil {
@@ -175,4 +132,15 @@ func getPublicSSHKey() []byte {
 	}
 
 	return keyData
+}
+
+// getUserDataScript returns the user data script in this repo at hack/user-data.sh
+func getUserDataScript() []byte {
+	userDataScript := "hack/user-data.sh"
+	scriptData, err := os.ReadFile(userDataScript)
+	if err != nil {
+		log.Panicf("Failed reading data from user data script: %s", err)
+	}
+
+	return scriptData
 }
