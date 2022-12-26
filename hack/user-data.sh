@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Install docker, k3d, and kubectl as user data script during launch of ec2 instance
+# This script installs tools as a user data script during launch of an ec2 instance
+
+# Install docker
 apt-get update
 apt-get install -y \
         ca-certificates \
@@ -24,10 +26,9 @@ apt-get install -y \
 groupadd docker
 usermod -aG docker ubuntu
 
+# Install kubectl
 apt-get update
-
 curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-
 echo \
     "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
     | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -35,4 +36,5 @@ echo \
 apt-get update
 apt-get install -y kubectl
 
+# Install k3d
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
