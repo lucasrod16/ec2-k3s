@@ -98,36 +98,11 @@ func main() {
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
 
 	// Run the update to deploy our infrastructure
-	res, err := stack.Up(ctx, stdoutStreamer)
+	_, err = stack.Up(ctx, stdoutStreamer)
 	if err != nil {
 		fmt.Printf("Failed to update stack: %v\n\n", err)
 		os.Exit(1)
 	}
 
 	fmt.Println("Update succeeded!")
-
-	// Get the instance ID from the stack outputs
-	instanceId, ok := res.Outputs["instanceId"].Value.(string)
-	if !ok {
-		fmt.Println("Failed to unmarshall output")
-		os.Exit(1)
-	}
-
-	// Get the public IP address from the stack outputs
-	publicIp, ok := res.Outputs["publicIp"].Value.(string)
-	if !ok {
-		fmt.Println("Failed to unmarshall output")
-		os.Exit(1)
-	}
-
-	// Get the hostname from the stack outputs
-	hostname, ok := res.Outputs["hostname"].Value.(string)
-	if !ok {
-		fmt.Println("Failed to unmarshall output")
-		os.Exit(1)
-	}
-
-	fmt.Printf("Instance ID: %s\n", instanceId)
-	fmt.Printf("Public IP: %s\n", publicIp)
-	fmt.Printf("Hostname: %s\n", hostname)
 }
