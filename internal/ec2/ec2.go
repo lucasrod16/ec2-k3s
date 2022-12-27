@@ -91,10 +91,8 @@ func CreateInstance(ctx *pulumi.Context) (*infrastructure, error) {
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
 			"Name":         pulumi.String("lucas-dev"),
-			"Cluster-type": pulumi.String("k3d"),
-			"Workload":     pulumi.String("bigbang"),
+			"Cluster-type": pulumi.String("k3s"),
 		},
-		UserData: pulumi.String(getUserDataScript()),
 	})
 	if err != nil {
 		return nil, err
@@ -173,15 +171,4 @@ func getPublicSSHKey() []byte {
 	}
 
 	return keyData
-}
-
-// getUserDataScript returns the user data script in this repo at hack/user-data.sh
-func getUserDataScript() []byte {
-	userDataScript := "hack/user-data.sh"
-	scriptData, err := os.ReadFile(userDataScript)
-	if err != nil {
-		log.Panicf("Failed reading data from user data script: %s", err)
-	}
-
-	return scriptData
 }
