@@ -22,8 +22,8 @@ func main() {
 
 		// Print infrastructure details to stdout
 		ctx.Export("EC2 Instance", infra.Server.ID())
-		ctx.Export("publicIp", infra.Server.PublicIp)
-		ctx.Export("publicHostName", infra.Server.PublicDns)
+		ctx.Export("Public IP", infra.Server.PublicIp)
+		ctx.Export("Public Hostname", infra.Server.PublicDns)
 		return nil
 	})
 }
