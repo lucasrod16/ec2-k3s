@@ -2,4 +2,4 @@
 
 echo "Goodbye infrastructure...until we meet again 🫡"
 rm ./kubeconfig.yaml
-pulumi destroy --yes
+go run main.go destroy

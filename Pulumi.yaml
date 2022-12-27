@@ -1,3 +1,0 @@
-name: ec2-k3d
-description: An ec2-k3d development environment
-runtime: go
