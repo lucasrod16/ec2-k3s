@@ -35,7 +35,7 @@ func main() {
 			return err
 		}
 
-		ctx.Export("instanceId", infra.Server.URN())
+		ctx.Export("instanceId", infra.Server.ID())
 		ctx.Export("publicIp", infra.Server.PublicIp)
 		ctx.Export("hostname", infra.Server.PublicDns)
 		return nil
