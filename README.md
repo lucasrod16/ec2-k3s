@@ -7,10 +7,7 @@ This is a [Pulumi](https://www.pulumi.com/) project that does the following:
   - security group
   - ssh keypair
 
-- Creates [k3d](https://k3d.io/) cluster on the ec2 instance
-- Sets up the cluster for remote access from your local machine
-
-This is built on and for macOS
+- Creates [k3s](https://docs.k3s.io/) cluster on the ec2 instance
 
 ## Dependencies
 
@@ -31,7 +28,7 @@ The following dependencies are required to run this:
 Clone the repository
 
 ```bash
-git clone https://github.com/lucasrod16/ec2-k3d.git
+git clone https://github.com/lucasrod16/ec2-k3s.git
 ```
 
 List Makefile targets
@@ -40,7 +37,7 @@ List Makefile targets
 make help
 ```
 
-Create AWS infrastructure and k3d cluster
+Create AWS infrastructure and k3s cluster
 
 ```bash
 make all
