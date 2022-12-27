@@ -7,6 +7,14 @@ help: ## Display list of all targets
 .PHONY: all
 all: create-infra wait create-cluster copy-kubeconfig ## Create AWS infrastructure, create k3d cluster, and set up cluster for remote access
 
+.PHONY: build
+build: ## Compile the program into a static go binary
+	hack/build.sh
+
+.PHONY: clean
+clean: ## Delete the build directory containing compiled binaries
+	hack/clean.sh
+
 .PHONY: connect
 connect: ## Connect to ec2 instance via SSH
 	hack/connect.sh
