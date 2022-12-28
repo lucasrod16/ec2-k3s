@@ -39,7 +39,7 @@ The following dependencies are required to run this:
 
     - All ports and protocols allowed to any IP address
 
-  - SSH keypair uses local SSH public key at `~/.ssh/id_rsa.pub`
+- SSH keypair uses local SSH public key at `~/.ssh/id_rsa.pub`
 
 ## Usage
 
