@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"main/internal/types"
 	"net/http"
 	"os"
 
@@ -12,15 +13,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type infrastructure struct {
-	ami           *ec2.LookupAmiResult
-	Keypair       *ec2.KeyPair
-	SecurityGroup *ec2.SecurityGroup
-	Server        *ec2.Instance
-}
-
 // createSecurityGroup creates a security group in AWS
-func createSecurityGroup(ctx *pulumi.Context) (*infrastructure, error) {
+func createSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	securityGroup, err := ec2.NewSecurityGroup(ctx, "security-group", &ec2.SecurityGroupArgs{
 		Description: pulumi.String("Allow all inbound traffic from the workstation IP address only"),
 		Ingress: ec2.SecurityGroupIngressArray{
@@ -52,13 +46,13 @@ func createSecurityGroup(ctx *pulumi.Context) (*infrastructure, error) {
 		return nil, err
 	}
 
-	return &infrastructure{
+	return &types.Infrastructure{
 		SecurityGroup: securityGroup,
 	}, nil
 }
 
 // CreateSSHKeyPair creates an SSH keypair in AWS
-func CreateSSHKeyPair(ctx *pulumi.Context) (*infrastructure, error) {
+func CreateSSHKeyPair(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	keypair, err := ec2.NewKeyPair(ctx, "ssh-keypair", &ec2.KeyPairArgs{
 		KeyName:   pulumi.String("ec2-k3s-keypair"),
 		PublicKey: pulumi.String(getPublicSSHKey()),
@@ -67,13 +61,13 @@ func CreateSSHKeyPair(ctx *pulumi.Context) (*infrastructure, error) {
 		return nil, err
 	}
 
-	return &infrastructure{
+	return &types.Infrastructure{
 		Keypair: keypair,
 	}, nil
 }
 
 // CreateInstance creates an ec2 instance in AWS
-func CreateInstance(ctx *pulumi.Context) (*infrastructure, error) {
+func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	computeInfra, err := getUbuntuAMI(ctx)
 	if err != nil {
 		return nil, err
@@ -85,7 +79,7 @@ func CreateInstance(ctx *pulumi.Context) (*infrastructure, error) {
 	}
 
 	server, err := ec2.NewInstance(ctx, "ec2-instance", &ec2.InstanceArgs{
-		Ami:                 pulumi.String(computeInfra.ami.ImageId),
+		Ami:                 pulumi.String(computeInfra.Ami.ImageId),
 		InstanceType:        pulumi.String("t3.2xlarge"),
 		KeyName:             pulumi.String("ec2-k3s-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
@@ -98,13 +92,13 @@ func CreateInstance(ctx *pulumi.Context) (*infrastructure, error) {
 		return nil, err
 	}
 
-	return &infrastructure{
+	return &types.Infrastructure{
 		Server: server,
 	}, nil
 }
 
 // getUbuntuAMI returns the latest Ubuntu 22.04 AMI ID
-func getUbuntuAMI(ctx *pulumi.Context) (*infrastructure, error) {
+func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	ami, err := ec2.LookupAmi(ctx, &ec2.LookupAmiArgs{
 		MostRecent: pulumi.BoolRef(true),
 		Filters: []ec2.GetAmiFilter{
@@ -129,8 +123,8 @@ func getUbuntuAMI(ctx *pulumi.Context) (*infrastructure, error) {
 		return nil, err
 	}
 
-	return &infrastructure{
-		ami: ami,
+	return &types.Infrastructure{
+		Ami: ami,
 	}, nil
 }
 
