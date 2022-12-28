@@ -60,7 +60,7 @@ func createSecurityGroup(ctx *pulumi.Context) (*infrastructure, error) {
 // CreateSSHKeyPair creates an SSH keypair in AWS
 func CreateSSHKeyPair(ctx *pulumi.Context) (*infrastructure, error) {
 	keypair, err := ec2.NewKeyPair(ctx, "ssh-keypair", &ec2.KeyPairArgs{
-		KeyName:   pulumi.String("ec2-k3d-keypair"),
+		KeyName:   pulumi.String("ec2-k3s-keypair"),
 		PublicKey: pulumi.String(getPublicSSHKey()),
 	})
 	if err != nil {
@@ -87,7 +87,7 @@ func CreateInstance(ctx *pulumi.Context) (*infrastructure, error) {
 	server, err := ec2.NewInstance(ctx, "ec2-instance", &ec2.InstanceArgs{
 		Ami:                 pulumi.String(computeInfra.ami.ImageId),
 		InstanceType:        pulumi.String("t3.2xlarge"),
-		KeyName:             pulumi.String("ec2-k3d-keypair"),
+		KeyName:             pulumi.String("ec2-k3s-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
 			"Name":         pulumi.String("lucas-dev"),
