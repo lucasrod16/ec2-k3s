@@ -11,7 +11,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Deploy() pulumi.RunFunc {
+func deploy() pulumi.RunFunc {
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
 		_, err := CreateSSHKeyPair(ctx)
@@ -36,13 +36,14 @@ func Deploy() pulumi.RunFunc {
 	return deployFunc
 }
 
-func Up() auto.Stack {
+// Up provisions AWS infrastructure
+func Up() {
 	ctx := context.Background()
 
 	projectName := "ec2-k3s"
 	stackName := "dev"
 
-	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, Deploy())
+	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deploy())
 
 	fmt.Printf("Created/Selected stack %q\n", stackName)
 
@@ -89,16 +90,16 @@ func Up() auto.Stack {
 
 	// TODO: Use GetInstanceStatus result to check for "passed" status before creating cluster
 
-	return stack
 }
 
+// Down tears down AWS infrastructure
 func Down() error {
 	ctx := context.Background()
 
 	projectName := "ec2-k3s"
 	stackName := "dev"
 
-	stack, err := auto.UpsertStackInlineSource(ctx, stackName, projectName, Deploy())
+	stack, err := auto.UpsertStackInlineSource(ctx, stackName, projectName, deploy())
 	if err != nil {
 		return err
 	}

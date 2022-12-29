@@ -61,7 +61,7 @@ func LocalIP() []byte {
 	return cidr
 }
 
-// SetupEC2Client Configures a client to make EC2 API calls
+// SetupEC2Client configures a client to make EC2 API calls
 func SetupEC2Client() *ec2.EC2 {
 	sess := session.Must(session.NewSession())
 	svc := ec2.New(sess, aws.NewConfig().WithRegion("us-east-1"))
