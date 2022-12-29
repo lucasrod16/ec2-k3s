@@ -1,36 +1,35 @@
-package ec2
+package infra
 
 import (
-	"bytes"
+	"context"
 	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/lucasrod16/ec2-k3s/internal/types"
+	"github.com/lucasrod16/ec2-k3s/internal/utils"
 
-	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
+	pec2 "github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // createSecurityGroup creates a security group in AWS
 func createSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
-	securityGroup, err := ec2.NewSecurityGroup(ctx, "security-group", &ec2.SecurityGroupArgs{
+	securityGroup, err := pec2.NewSecurityGroup(ctx, "security-group", &pec2.SecurityGroupArgs{
 		Description: pulumi.String("Allow all inbound traffic from the workstation IP address only"),
-		Ingress: ec2.SecurityGroupIngressArray{
-			&ec2.SecurityGroupIngressArgs{
+		Ingress: pec2.SecurityGroupIngressArray{
+			&pec2.SecurityGroupIngressArgs{
 				Description: pulumi.String("All ports and protocols from workstation IP"),
 				FromPort:    pulumi.Int(0),
 				ToPort:      pulumi.Int(0),
 				Protocol:    pulumi.String("-1"),
 				CidrBlocks: pulumi.StringArray{
-					pulumi.String(localIP()),
+					pulumi.String(utils.LocalIP()),
 				},
 			},
 		},
-		Egress: ec2.SecurityGroupEgressArray{
-			&ec2.SecurityGroupEgressArgs{
+		Egress: pec2.SecurityGroupEgressArray{
+			&pec2.SecurityGroupEgressArgs{
 				FromPort: pulumi.Int(0),
 				ToPort:   pulumi.Int(0),
 				Protocol: pulumi.String("-1"),
@@ -54,9 +53,9 @@ func createSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
 
 // CreateSSHKeyPair creates an SSH keypair in AWS
 func CreateSSHKeyPair(ctx *pulumi.Context) (*types.Infrastructure, error) {
-	keypair, err := ec2.NewKeyPair(ctx, "ssh-keypair", &ec2.KeyPairArgs{
+	keypair, err := pec2.NewKeyPair(ctx, "ssh-keypair", &pec2.KeyPairArgs{
 		KeyName:   pulumi.String("ec2-k3s-keypair"),
-		PublicKey: pulumi.String(getPublicSSHKey()),
+		PublicKey: pulumi.String(utils.GetPublicSSHKey()),
 	})
 	if err != nil {
 		return nil, err
@@ -79,7 +78,7 @@ func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 		return nil, err
 	}
 
-	server, err := ec2.NewInstance(ctx, "ec2-instance", &ec2.InstanceArgs{
+	server, err := pec2.NewInstance(ctx, "ec2-instance", &pec2.InstanceArgs{
 		Ami:                 pulumi.String(computeInfra.Ami.ImageId),
 		InstanceType:        pulumi.String("t3.2xlarge"),
 		KeyName:             pulumi.String("ec2-k3s-keypair"),
@@ -100,16 +99,16 @@ func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 
 // getUbuntuAMI returns the latest Ubuntu 22.04 AMI ID
 func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
-	ami, err := ec2.LookupAmi(ctx, &ec2.LookupAmiArgs{
+	ami, err := pec2.LookupAmi(ctx, &pec2.LookupAmiArgs{
 		MostRecent: pulumi.BoolRef(true),
-		Filters: []ec2.GetAmiFilter{
-			ec2.GetAmiFilter{
+		Filters: []pec2.GetAmiFilter{
+			pec2.GetAmiFilter{
 				Name: "name",
 				Values: []string{
 					"ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*",
 				},
 			},
-			ec2.GetAmiFilter{
+			pec2.GetAmiFilter{
 				Name: "virtualization-type",
 				Values: []string{
 					"hvm",
@@ -129,41 +128,32 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	}, nil
 }
 
-// localIP returns the IP address of the machine that executed the program
-func localIP() []byte {
-	resp, err := http.Get("https://checkip.amazonaws.com")
-	if err != nil {
-		panic(err)
+func WaitInstanceReady(ctx context.Context) error {
+	client := utils.SetupEC2Client()
+
+	input := &ec2.DescribeInstanceStatusInput{
+		Filters: []*ec2.Filter{
+			{
+				Name: aws.String("instance-status.reachability"),
+				Values: []*string{
+					aws.String("passed"),
+					aws.String("failed"),
+					aws.String("initializing"),
+					aws.String("insufficient-data"),
+				},
+			},
+		},
 	}
 
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
+	result, err := client.DescribeInstanceStatus(input)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	trimmedBody := bytes.Trim(body, "\n")
-	suffix := "/32"
-	cidr := append([]byte(trimmedBody), suffix...)
+	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
+	instanceStatus := utils.DerefString(instanceStatusPointer)
 
-	fmt.Printf("\nWorkstation IP address: %s", cidr)
+	fmt.Println(instanceStatus)
 
-	return cidr
-}
-
-// getPublicSSHKey returns the public ssh key at ~/.ssh/id_rsa.pub
-func getPublicSSHKey() []byte {
-	userHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-
-	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
-	keyData, err := os.ReadFile(publicSSHKey)
-	if err != nil {
-		log.Panicf("Failed reading data from public ssh key: %s", err)
-	}
-
-	return keyData
+	return nil
 }

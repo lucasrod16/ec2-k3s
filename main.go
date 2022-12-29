@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/lucasrod16/ec2-k3s/internal/ec2"
-
+	"github.com/lucasrod16/ec2-k3s/internal/infra"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
@@ -14,6 +13,7 @@ import (
 )
 
 func main() {
+
 	// To destroy our program, we can run `go run main.go destroy`
 	destroy := false
 	argsWithoutProg := os.Args[1:]
@@ -25,17 +25,18 @@ func main() {
 
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
-		_, err := ec2.CreateSSHKeyPair(ctx)
+		_, err := infra.CreateSSHKeyPair(ctx)
 		if err != nil {
 			return err
 		}
 
 		// Create ec2 instance and security group in AWS
-		infra, err := ec2.CreateInstance(ctx)
+		infra, err := infra.CreateInstance(ctx)
 		if err != nil {
 			return err
 		}
 
+		// Print outputs
 		ctx.Export("instanceId", infra.Server.ID())
 		ctx.Export("publicIp", infra.Server.PublicIp)
 		ctx.Export("hostname", infra.Server.PublicDns)
@@ -106,4 +107,7 @@ func main() {
 	}
 
 	fmt.Println("Update succeeded!")
+
+	// Wait for instance to be ready
+	infra.WaitInstanceReady(ctx)
 }
