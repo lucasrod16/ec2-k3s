@@ -44,7 +44,7 @@ func main() {
 
 	ctx := context.Background()
 
-	projectName := "ec2-k3d"
+	projectName := "ec2-k3s"
 	stackName := "dev"
 
 	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployFunc)
