@@ -108,6 +108,8 @@ func main() {
 
 	fmt.Println("Update succeeded!")
 
-	// Wait for instance to be ready
-	infra.WaitInstanceReady(ctx)
+	// Return the ec2 instance reachability status
+	infra.GetInstanceStatus(ctx)
+
+	// TODO: Use GetInstanceStatus result to check for "passed" status before creating cluster
 }

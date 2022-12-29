@@ -128,7 +128,8 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	}, nil
 }
 
-func WaitInstanceReady(ctx context.Context) error {
+// GetInstanceStatus returns the reachability status of the ec2 instance
+func GetInstanceStatus(ctx context.Context) error {
 	client := utils.SetupEC2Client()
 
 	input := &ec2.DescribeInstanceStatusInput{
