@@ -1,4 +1,4 @@
-module main
+module github.com/lucasrod16/ec2-k3s
 
 go 1.19
 

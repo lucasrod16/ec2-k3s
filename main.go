@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"main/internal/ec2"
 	"os"
+
+	"github.com/lucasrod16/ec2-k3s/internal/ec2"
 
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"

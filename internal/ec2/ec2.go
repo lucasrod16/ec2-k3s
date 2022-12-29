@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"main/internal/types"
 	"net/http"
 	"os"
+
+	"github.com/lucasrod16/ec2-k3s/internal/types"
 
 	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
