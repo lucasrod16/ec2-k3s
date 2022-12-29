@@ -64,5 +64,5 @@ make all
 Tear down AWS infrastructure
 
 ```bash
-make destroy
+make infra-down
 ```
