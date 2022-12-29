@@ -6,18 +6,14 @@ package cmd
 import (
 	"os"
 
-	"github.com/lucasrod16/ec2-k3s/internal/infra"
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "cloud-infra",
-	Short: "Provision cloud infrastructure",
-	Long:  "cloud-infra is a CLI that provisions cloud infrastructure.",
-	Run: func(cmd *cobra.Command, args []string) {
-		infra.Up()
-	},
+	Short: "Quickly provision and teardown AWS infrastructure",
+	Long:  "cloud-infra is a CLI tool that manages AWS infrastructure with Pulumi.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
