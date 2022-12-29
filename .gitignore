@@ -16,3 +16,4 @@
 
 kubeconfig
 build/
+cloud-infra*

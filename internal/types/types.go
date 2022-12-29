@@ -1,6 +1,8 @@
 package types
 
-import "github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
+import (
+	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
+)
 
 type Infrastructure struct {
 	Ami           *ec2.LookupAmiResult

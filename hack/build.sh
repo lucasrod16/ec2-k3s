@@ -1,3 +1,3 @@
 #!/bin/bash
 
-go build -o build/lucas-dev
+go build -o build/cloud-infra
