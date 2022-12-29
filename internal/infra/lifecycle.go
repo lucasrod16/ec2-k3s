@@ -11,7 +11,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func deploy() pulumi.RunFunc {
+func deployInfra() pulumi.RunFunc {
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
 		_, err := CreateSSHKeyPair(ctx)
@@ -25,7 +25,7 @@ func deploy() pulumi.RunFunc {
 			return err
 		}
 
-		// Print outputs
+		// Print outputs to stdout
 		ctx.Export("instanceId", i.Server.ID())
 		ctx.Export("publicIp", i.Server.PublicIp)
 		ctx.Export("hostname", i.Server.PublicDns)
@@ -36,14 +36,13 @@ func deploy() pulumi.RunFunc {
 	return deployFunc
 }
 
-// Up provisions AWS infrastructure
-func Up() {
+func configurePulumi() (auto.Stack, context.Context) {
 	ctx := context.Background()
 
 	projectName := "ec2-k3s"
 	stackName := "dev"
 
-	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deploy())
+	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra())
 
 	fmt.Printf("Created/Selected stack %q\n", stackName)
 
@@ -71,16 +70,22 @@ func Up() {
 
 	fmt.Println("Refresh succeeded!")
 
+	return stack, ctx
+}
+
+// Up provisions AWS infrastructure
+func Up() error {
+	pulumiStack, ctx := configurePulumi()
+
 	fmt.Println("Starting update")
 
 	// Wire up our update to stream progress to stdout
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
 
 	// Run the update to deploy our infrastructure
-	_, err = stack.Up(ctx, stdoutStreamer)
+	_, err := pulumiStack.Up(ctx, stdoutStreamer)
 	if err != nil {
-		fmt.Printf("Failed to update stack: %v\n\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	fmt.Println("Update succeeded!")
@@ -90,50 +95,12 @@ func Up() {
 
 	// TODO: Use GetInstanceStatus result to check for "passed" status before creating cluster
 
+	return nil
 }
 
 // Down tears down AWS infrastructure
 func Down() error {
-	ctx := context.Background()
-
-	projectName := "ec2-k3s"
-	stackName := "dev"
-
-	stack, err := auto.UpsertStackInlineSource(ctx, stackName, projectName, deploy())
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Created/Selected stack %q\n", stackName)
-
-	workspace := stack.Workspace()
-
-	fmt.Println("Installing the AWS plugin")
-
-	// For inline source programs, we must manage plugins ourselves
-	err = workspace.InstallPlugin(ctx, "aws", "v5.25.0")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Successfully installed AWS plugin")
-
-	// Set stack configuration specifying the AWS region to deploy
-	err = stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: "us-east-1"})
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Successfully set config")
-
-	fmt.Println("Starting refresh")
-
-	_, err = stack.Refresh(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Refresh succeeded!")
+	pulumiStack, ctx := configurePulumi()
 
 	fmt.Println("Starting stack destroy")
 
@@ -141,7 +108,7 @@ func Down() error {
 	stdoutStreamer := optdestroy.ProgressStreams(os.Stdout)
 
 	// Destroy our stack and exit early
-	_, err = stack.Destroy(ctx, stdoutStreamer)
+	_, err := pulumiStack.Destroy(ctx, stdoutStreamer)
 	if err != nil {
 		return err
 	}
