@@ -56,7 +56,7 @@ func main() {
 	fmt.Println("Installing the AWS plugin")
 
 	// For inline source programs, we must manage plugins ourselves
-	err := workspace.InstallPlugin(ctx, "aws", "v4.0.0")
+	err := workspace.InstallPlugin(ctx, "aws", "v5.25.0")
 	if err != nil {
 		fmt.Printf("Failed to install program plugins: %v\n", err)
 		os.Exit(1)
