@@ -5,7 +5,7 @@ help: ## Display list of all targets
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 .PHONY: all
-all: create-infra wait-infra create-cluster wait-cluster ## Create AWS infrastructure and k3s cluster
+all: infra-up wait-infra create-cluster wait-cluster ## Create AWS infrastructure and k3s cluster
 
 .PHONY: build
 build: ## Compile the program into a static go binary
@@ -23,13 +23,13 @@ connect: ## Connect to ec2 instance via SSH
 create-cluster: ## Create k3s cluster on the ec2 instance
 	hack/create-cluster.sh
 
-.PHONY: create-infra
-create-infra: ## Create ec2 instance, security group, ssh keypair
-	hack/create-infra.sh
+.PHONY: infra-up
+infra-up: ## Create ec2 instance, security group, ssh keypair
+	hack/infra-up.sh
 
-.PHONY: destroy
-destroy: ## Tear down AWS infrastructure
-	hack/destroy.sh
+.PHONY: infra-down
+infra-down: ## Teardown AWS infrastructure
+	hack/infra-down.sh
 
 .PHONY: wait-cluster
 wait-cluster: ## Wait for the cluster to be ready
