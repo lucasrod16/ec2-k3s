@@ -11,8 +11,6 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-var pulumiStack, ctx = configurePulumi()
-
 func deployInfra() pulumi.RunFunc {
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
@@ -77,6 +75,8 @@ func configurePulumi() (auto.Stack, context.Context) {
 
 // Up provisions AWS infrastructure
 func Up() error {
+	pulumiStack, ctx := configurePulumi()
+
 	fmt.Println("Starting update")
 
 	// Wire up our update to stream progress to stdout
@@ -100,6 +100,8 @@ func Up() error {
 
 // Down tears down AWS infrastructure
 func Down() error {
+	pulumiStack, ctx := configurePulumi()
+
 	fmt.Println("Starting stack destroy")
 
 	// Wire up our destroy to stream progress to stdout
