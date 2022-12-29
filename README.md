@@ -25,7 +25,7 @@ The following dependencies are required to run this:
 
 ## Technical Specs
 
-- Ubuntu 22.04 LTS AMI for the ec2 instance
+- `Ubuntu 22.04 LTS` AMI for the ec2 instance
 
 - `t3.2xlarge` ec2 instance type
 
