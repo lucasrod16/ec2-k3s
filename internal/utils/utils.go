@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
+// DerefString Dereferences string pointers to strings
 func DerefString(s *string) string {
 	if s != nil {
 		return *s
@@ -60,6 +61,7 @@ func LocalIP() []byte {
 	return cidr
 }
 
+// SetupEC2Client Configures a client to make EC2 API calls
 func SetupEC2Client() *ec2.EC2 {
 	sess := session.Must(session.NewSession())
 	svc := ec2.New(sess, aws.NewConfig().WithRegion("us-east-1"))

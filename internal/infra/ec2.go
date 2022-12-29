@@ -145,6 +145,7 @@ func WaitInstanceReady(ctx context.Context) error {
 		},
 	}
 
+	// Describe the status of running instances
 	result, err := client.DescribeInstanceStatus(input)
 	if err != nil {
 		return err
