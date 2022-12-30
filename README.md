@@ -13,7 +13,7 @@ This is a [Pulumi](https://www.pulumi.com/) project that does the following:
 
 The following dependencies are required to run this:
 
-- go `1.19`
+- [go](https://go.dev/doc/install) `1.19`
 
 - [pulumi cli](https://www.pulumi.com/docs/get-started/install/) -- `brew install pulumi`
 
@@ -58,11 +58,11 @@ make help
 Create AWS infrastructure and k3s cluster
 
 ```bash
-make all
+make up
 ```
 
 Tear down AWS infrastructure
 
 ```bash
-make infra-down
+make down
 ```

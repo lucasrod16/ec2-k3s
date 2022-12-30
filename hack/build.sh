@@ -1,3 +1,3 @@
 #!/bin/bash
 
-go build -o build/cloud-infra
+go build -o build/ec2-k3s

@@ -1,8 +1,6 @@
 package infra
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -16,7 +14,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// createSecurityGroup creates a security group in AWS
+// CreateSecurityGroup creates a security group in AWS
 func CreateSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	securityGroup, err := pec2.NewSecurityGroup(ctx, "security-group", &pec2.SecurityGroupArgs{
 		Description: pulumi.String("Allow all inbound traffic from the workstation IP address only"),
@@ -131,6 +129,7 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	}, nil
 }
 
+// GetInstanceIp returns the public IP address of the ec2 instance
 func GetInstanceIp() (string, error) {
 	client := utils.SetupEC2Client()
 
@@ -151,7 +150,7 @@ func GetInstanceIp() (string, error) {
 		return "", err
 	}
 
-	// // Convert string pointer to string
+	// Convert string pointer to string
 	publicIpAddressPointer := result.Reservations[0].Instances[0].PublicIpAddress
 	publicIpAddress := utils.DerefString(publicIpAddressPointer)
 
@@ -159,7 +158,7 @@ func GetInstanceIp() (string, error) {
 }
 
 // GetInstanceStatus returns the reachability status of the ec2 instance
-func GetInstanceStatus() string {
+func GetInstanceStatus() (string, error) {
 	client := utils.SetupEC2Client()
 
 	input := &ec2.DescribeInstanceStatusInput{
@@ -179,23 +178,26 @@ func GetInstanceStatus() string {
 	// Describe the status of running instances
 	result, err := client.DescribeInstanceStatus(input)
 	if err != nil {
-		fmt.Printf("Failed to describe instance status: %v\n", err)
-		os.Exit(1)
+		return "", err
 	}
 
 	// Convert string pointer to string
 	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
 	instanceStatus := utils.DerefString(instanceStatusPointer)
 
-	return instanceStatus
+	return instanceStatus, nil
 }
 
 // WaitInstanceReady waits for instance healtch checks to return "passed"
 func WaitInstanceReady() error {
+	// TODO: Add a fancy spinner/progressbar here
 	pterm.Println(pterm.Cyan("Waiting for ec2 instance to be ready..."))
 
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
-		status := GetInstanceStatus()
+		status, err := GetInstanceStatus()
+		if err != nil {
+			return false, err
+		}
 
 		if status == "passed" {
 			pterm.Println(pterm.Green("Instance is ready!"))

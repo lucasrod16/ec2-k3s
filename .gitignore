@@ -16,4 +16,4 @@
 
 kubeconfig
 build/
-cloud-infra*
+ec2-k3s*

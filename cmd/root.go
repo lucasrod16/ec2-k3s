@@ -11,9 +11,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "cloud-infra",
-	Short: "Quickly provision and teardown AWS infrastructure",
-	Long:  "cloud-infra is a CLI tool that manages AWS infrastructure with Pulumi.",
+	Use:   "ec2-k3s",
+	Short: "Quickly provision and teardown an AWS infrastructure and k3s cluster",
+	Long:  "ec2-k3s is a CLI tool that manages AWS infrastructure and k3s cluster creation.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
