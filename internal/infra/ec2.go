@@ -163,7 +163,7 @@ func GetInstanceStatus() string {
 	return instanceStatus
 }
 
-// // WaitInstanceReady waits for instance healtch checks to return "passed"
+// WaitInstanceReady waits for instance healtch checks to return "passed"
 func WaitInstanceReady() error {
 	pterm.Println(pterm.Cyan("Waiting for ec2 instance to be ready..."))
 
