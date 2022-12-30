@@ -21,15 +21,15 @@ func deployInfra() pulumi.RunFunc {
 		}
 
 		// Create ec2 instance and security group in AWS
-		i, err := CreateInstance(ctx)
+		infra, err := CreateInstance(ctx)
 		if err != nil {
 			return err
 		}
 
 		// Print outputs to stdout
-		ctx.Export("instanceId", i.Server.ID())
-		ctx.Export("publicIp", i.Server.PublicIp)
-		ctx.Export("hostname", i.Server.PublicDns)
+		ctx.Export("instanceId", infra.Server.ID())
+		ctx.Export("publicIp", infra.Server.PublicIp)
+		ctx.Export("hostname", infra.Server.PublicDns)
 
 		return nil
 	}
