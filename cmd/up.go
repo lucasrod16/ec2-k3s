@@ -11,8 +11,7 @@ import (
 // upCmd represents the up command
 var upCmd = &cobra.Command{
 	Use:   "up",
-	Short: "Provision AWS infrastructure",
-	Long:  "Provision AWS infrastructure managed by Pulumi.",
+	Short: "Provision AWS infrastructure and k3s cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		infra.Up()
 	},

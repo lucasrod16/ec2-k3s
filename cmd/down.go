@@ -11,8 +11,7 @@ import (
 // downCmd represents the down command
 var downCmd = &cobra.Command{
 	Use:   "down",
-	Short: "Teardown AWS infrastructure",
-	Long:  "Teardown AWS infrastructure managed by Pulumi.",
+	Short: "Teardown AWS infrastructure and k3s cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		infra.Down()
 	},
