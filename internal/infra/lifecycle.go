@@ -91,9 +91,6 @@ func Up() error {
 
 	pterm.Println(pterm.Green("Update succeeded!"))
 
-	// Return the ec2 instance reachability status
-	GetInstanceStatus()
-
 	// Wait for ec2 instance to be ready
 	WaitInstanceReady()
 
