@@ -94,6 +94,8 @@ func Up() error {
 	// Wait for ec2 instance to be ready
 	WaitInstanceReady()
 
+	// TODO: create k3s cluster
+
 	return nil
 }
 

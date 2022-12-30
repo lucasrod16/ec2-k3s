@@ -131,6 +131,33 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	}, nil
 }
 
+func GetInstanceIp() (string, error) {
+	client := utils.SetupEC2Client()
+
+	input := &ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			{
+				Name: aws.String("ip-address"),
+				Values: []*string{
+					aws.String("*"),
+				},
+			},
+		},
+	}
+
+	// Describe the status of running instances
+	result, err := client.DescribeInstances(input)
+	if err != nil {
+		return "", err
+	}
+
+	// // Convert string pointer to string
+	publicIpAddressPointer := result.Reservations[0].Instances[0].PublicIpAddress
+	publicIpAddress := utils.DerefString(publicIpAddressPointer)
+
+	return publicIpAddress, nil
+}
+
 // GetInstanceStatus returns the reachability status of the ec2 instance
 func GetInstanceStatus() string {
 	client := utils.SetupEC2Client()
