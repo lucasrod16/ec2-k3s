@@ -12,7 +12,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ec2-k3s",
-	Short: "Quickly provision and teardown an AWS infrastructure and k3s cluster",
+	Short: "Quickly provision and teardown AWS infrastructure and k3s cluster",
 	Long:  "ec2-k3s is a CLI tool that manages AWS infrastructure and k3s cluster creation.",
 }
 
