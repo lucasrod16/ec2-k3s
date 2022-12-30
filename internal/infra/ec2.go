@@ -1,20 +1,23 @@
 package infra
 
 import (
-	"context"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/lucasrod16/ec2-k3s/internal/types"
 	"github.com/lucasrod16/ec2-k3s/internal/utils"
+	"github.com/pterm/pterm"
+	"k8s.io/apimachinery/pkg/util/wait"
 
 	pec2 "github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // createSecurityGroup creates a security group in AWS
-func createSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
+func CreateSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	securityGroup, err := pec2.NewSecurityGroup(ctx, "security-group", &pec2.SecurityGroupArgs{
 		Description: pulumi.String("Allow all inbound traffic from the workstation IP address only"),
 		Ingress: pec2.SecurityGroupIngressArray{
@@ -73,7 +76,7 @@ func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 		return nil, err
 	}
 
-	securityInfra, err := createSecurityGroup(ctx)
+	securityInfra, err := CreateSecurityGroup(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +132,7 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 }
 
 // GetInstanceStatus returns the reachability status of the ec2 instance
-func GetInstanceStatus(ctx context.Context) error {
+func GetInstanceStatus() string {
 	client := utils.SetupEC2Client()
 
 	input := &ec2.DescribeInstanceStatusInput{
@@ -149,13 +152,33 @@ func GetInstanceStatus(ctx context.Context) error {
 	// Describe the status of running instances
 	result, err := client.DescribeInstanceStatus(input)
 	if err != nil {
-		return err
+		fmt.Printf("Failed to describe instance status: %v\n", err)
+		os.Exit(1)
 	}
 
+	// Convert string pointer to string
 	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
 	instanceStatus := utils.DerefString(instanceStatusPointer)
 
-	fmt.Println(instanceStatus)
+	return instanceStatus
+}
 
+// // WaitInstanceReady waits for instance healtch checks to return "passed"
+func WaitInstanceReady() error {
+	pterm.Println(pterm.Cyan("Waiting for ec2 instance to be ready..."))
+
+	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
+		status := GetInstanceStatus()
+
+		if status == "passed" {
+			pterm.Println(pterm.Green("Instance is ready!"))
+			return true, nil
+		}
+
+		return false, nil
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
