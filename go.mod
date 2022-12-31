@@ -6,8 +6,8 @@ require (
 	github.com/alexellis/go-execute v0.5.0
 	github.com/aws/aws-sdk-go v1.44.169
 	github.com/pterm/pterm v0.12.51
-	github.com/pulumi/pulumi-aws/sdk/v5 v5.21.1
-	github.com/pulumi/pulumi/sdk/v3 v3.48.0
+	github.com/pulumi/pulumi-aws/sdk/v5 v5.25.0
+	github.com/pulumi/pulumi/sdk/v3 v3.50.1
 	github.com/spf13/cobra v1.6.1
 	k8s.io/apimachinery v0.26.0
 )
@@ -82,7 +82,6 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
 	k8s.io/utils v0.0.0-20221107191617-1a15be271d1d // indirect
