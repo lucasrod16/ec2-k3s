@@ -1,13 +1,13 @@
-# Kubernetes Development Environment
+# Provision a k3s Cluster in AWS
 
-This is a [Pulumi](https://www.pulumi.com/) project that does the following:
+`ec2-k3s` can be used to:
 
-- Provisions AWS infrastructure
+- Provision AWS infrastructure
   - ec2 instance
   - security group
   - ssh keypair
 
-- Creates [k3s](https://docs.k3s.io/) cluster on the ec2 instance
+- Create [k3s](https://docs.k3s.io/) cluster on the ec2 instance
 
 ## Dependencies
 
