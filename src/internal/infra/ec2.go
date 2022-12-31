@@ -5,8 +5,8 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/lucasrod16/ec2-k3s/internal/types"
-	"github.com/lucasrod16/ec2-k3s/internal/utils"
+	"github.com/lucasrod16/ec2-k3s/src/internal/types"
+	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
 	"github.com/pterm/pterm"
 	"k8s.io/apimachinery/pkg/util/wait"
 

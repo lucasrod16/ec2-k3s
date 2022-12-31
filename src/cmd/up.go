@@ -4,7 +4,7 @@ Copyright © 2022 Lucas Rodriguez
 package cmd
 
 import (
-	"github.com/lucasrod16/ec2-k3s/internal/infra"
+	"github.com/lucasrod16/ec2-k3s/src/internal/infra"
 	"github.com/spf13/cobra"
 )
 
