@@ -85,7 +85,7 @@ func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 		KeyName:             pulumi.String("ec2-k3s-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
-			"Name":         pulumi.String("lucas-dev"),
+			"Name":         pulumi.String("ec2-k3s"),
 			"Cluster-type": pulumi.String("k3s"),
 		},
 	})
@@ -188,7 +188,7 @@ func GetInstanceStatus() (string, error) {
 	return instanceStatus, nil
 }
 
-// WaitInstanceReady waits for instance healtch checks to return "passed"
+// WaitInstanceReady waits for instance health checks to return "passed"
 func WaitInstanceReady() error {
 	// TODO: Add a fancy spinner/progressbar here
 	pterm.Println(pterm.Cyan("Waiting for ec2 instance to be ready..."))
