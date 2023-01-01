@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/briandowns/spinner"
 	"github.com/lucasrod16/ec2-k3s/src/internal/types"
 	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
 	"github.com/pterm/pterm"
@@ -190,8 +191,10 @@ func GetInstanceStatus() (string, error) {
 
 // WaitInstanceReady waits for instance health checks to return "passed"
 func WaitInstanceReady() error {
-	// TODO: Add a fancy spinner/progressbar here
-	pterm.Println(pterm.Cyan("Waiting for ec2 instance to be ready..."))
+	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
+	s.Start()
+
+	pterm.Info.Println("Waiting for ec2 instance to be ready...")
 
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
 		status, err := GetInstanceStatus()
@@ -200,7 +203,8 @@ func WaitInstanceReady() error {
 		}
 
 		if status == "passed" {
-			pterm.Println(pterm.Green("Instance is ready!"))
+			s.Stop()
+			pterm.Success.Println("Instance is ready!")
 			return true, nil
 		}
 
@@ -209,5 +213,6 @@ func WaitInstanceReady() error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

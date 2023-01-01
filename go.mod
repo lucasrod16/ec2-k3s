@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/alexellis/go-execute v0.5.0
 	github.com/aws/aws-sdk-go v1.44.171
+	github.com/briandowns/spinner v1.20.0
 	github.com/pterm/pterm v0.12.51
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.25.0
 	github.com/pulumi/pulumi/sdk/v3 v3.50.2
@@ -48,6 +49,7 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/lithammer/fuzzysearch v1.1.5 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
