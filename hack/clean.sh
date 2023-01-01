@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf ./build/
+rm -rf ./ec2-k3s

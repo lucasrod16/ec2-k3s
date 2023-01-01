@@ -58,6 +58,12 @@ List Makefile targets
 make help
 ```
 
+Build from source
+
+```bash
+make build
+```
+
 Create AWS infrastructure and k3s cluster
 
 ```bash

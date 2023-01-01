@@ -1,4 +1,3 @@
 #!/bin/bash
 
-echo "Noticed you want some infrastructure...time to get building 🔨🔧👷"
-go run main.go up
+./ec2-k3s up
