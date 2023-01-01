@@ -91,7 +91,6 @@ func Up() error {
 	}
 	s.Stop()
 
-	// updateMessage := "Update succeeded!"
 	pterm.Success.Println("Update succeeded!")
 
 	// Wait for ec2 instance to be ready
