@@ -9,9 +9,7 @@
 
 - Create [k3s](https://docs.k3s.io/) cluster on the ec2 instance
 
-## Dependencies
-
-The following dependencies are required to run this:
+## Prerequisites
 
 - [go](https://go.dev/doc/install) `1.19`
 
@@ -29,8 +27,6 @@ The following dependencies are required to run this:
 ## Technical Specs
 
 - `Ubuntu 22.04 LTS` AMI for the ec2 instance
-
-- `t3.2xlarge` ec2 instance type
 
 - Security group
 
@@ -60,18 +56,32 @@ make help
 
 Build from source
 
+The build step outputs the binary in the current working directory
+
 ```bash
 make build
 ```
 
-Create AWS infrastructure and k3s cluster
+It can be executed by referencing it as `./ec2-k3s`
+
+Provision a k3s cluster in AWS
 
 ```bash
-make up
+./ec2-k3s up
 ```
 
-Tear down AWS infrastructure
+By default, `ec2-k3s up` will use an ec2 instance type of `t2.micro`
+
+To view a full list of options, see [here](https://aws.amazon.com/ec2/instance-types/)
+
+To specify the ec2 instance type to use:
 
 ```bash
-make down
+./ec2-k3s up --instance-type t2.small
+```
+
+Teardown AWS infrastructure and k3s cluster
+
+```bash
+./ec2-k3s down
 ```

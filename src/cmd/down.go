@@ -11,9 +11,10 @@ import (
 // downCmd represents the down command
 var downCmd = &cobra.Command{
 	Use:   "down",
+	Args:  cobra.MaximumNArgs(0),
 	Short: "Teardown AWS infrastructure and k3s cluster",
 	Run: func(cmd *cobra.Command, args []string) {
-		infra.Down()
+		infra.Down(o.InstanceType)
 	},
 }
 

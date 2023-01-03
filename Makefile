@@ -15,11 +15,3 @@ clean: ## Delete compiled binary from root directory
 .PHONY: connect
 connect: ## Connect to ec2 instance via SSH
 	hack/connect.sh
-
-.PHONY: up
-up: ## Provision infrastructure
-	hack/infra-up.sh
-
-.PHONY: down
-down: ## Teardown infrastructure
-	hack/infra-down.sh

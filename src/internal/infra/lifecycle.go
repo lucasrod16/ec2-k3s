@@ -13,7 +13,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func deployInfra() pulumi.RunFunc {
+func deployInfra(instanceType string) pulumi.RunFunc {
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
 		_, err := CreateSSHKeyPair(ctx)
@@ -22,15 +22,17 @@ func deployInfra() pulumi.RunFunc {
 		}
 
 		// Create ec2 instance and security group in AWS
-		infra, err := CreateInstance(ctx)
+		infra, err := CreateInstance(ctx, instanceType)
 		if err != nil {
 			return err
 		}
 
 		// Print outputs to stdout
-		ctx.Export("instanceId", infra.Server.ID())
-		ctx.Export("publicIp", infra.Server.PublicIp)
-		ctx.Export("hostname", infra.Server.PublicDns)
+		ctx.Export("Instance ID", infra.Server.ID())
+		ctx.Export("Public IP Address", infra.Server.PublicIp)
+		ctx.Export("Hostname", infra.Server.PublicDns)
+		ctx.Export("Instance Type", infra.Server.InstanceType)
+		ctx.Export("AMI ID", infra.Server.Ami)
 
 		return nil
 	}
@@ -38,12 +40,12 @@ func deployInfra() pulumi.RunFunc {
 	return deployFunc
 }
 
-func ConfigurePulumi() (auto.Stack, context.Context) {
+func ConfigurePulumi(instanceType string) (auto.Stack, context.Context) {
 	ctx := context.Background()
 	projectName := "ec2-k3s"
 	stackName := "dev"
 
-	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra())
+	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra(instanceType))
 
 	pterm.Info.Println("Created/Selected stack " + stackName)
 
@@ -76,8 +78,8 @@ func ConfigurePulumi() (auto.Stack, context.Context) {
 }
 
 // Up provisions AWS infrastructure
-func Up() error {
-	pulumiStack, ctx := ConfigurePulumi()
+func Up(instanceType string) error {
+	pulumiStack, ctx := ConfigurePulumi(instanceType)
 
 	// Wire up our update to stream progress to stdout
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
@@ -106,8 +108,8 @@ func Up() error {
 }
 
 // Down tears down AWS infrastructure
-func Down() error {
-	pulumiStack, ctx := ConfigurePulumi()
+func Down(instanceType string) error {
+	pulumiStack, ctx := ConfigurePulumi(instanceType)
 
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()
