@@ -10,3 +10,7 @@ type Infrastructure struct {
 	SecurityGroup *ec2.SecurityGroup
 	Server        *ec2.Instance
 }
+
+type InstanceOptions struct {
+	InstanceType string
+}

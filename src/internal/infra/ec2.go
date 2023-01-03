@@ -69,7 +69,7 @@ func CreateSSHKeyPair(ctx *pulumi.Context) (*types.Infrastructure, error) {
 }
 
 // CreateInstance creates an ec2 instance in AWS
-func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
+func CreateInstance(ctx *pulumi.Context, instanceType string) (*types.Infrastructure, error) {
 	computeInfra, err := getUbuntuAMI(ctx)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func CreateInstance(ctx *pulumi.Context) (*types.Infrastructure, error) {
 
 	server, err := pec2.NewInstance(ctx, "ec2-instance", &pec2.InstanceArgs{
 		Ami:                 pulumi.String(computeInfra.Ami.ImageId),
-		InstanceType:        pulumi.String("t3.2xlarge"),
+		InstanceType:        pulumi.String(instanceType),
 		KeyName:             pulumi.String("ec2-k3s-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
