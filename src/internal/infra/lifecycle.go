@@ -40,7 +40,7 @@ func deployInfra(instanceType string) pulumi.RunFunc {
 	return deployFunc
 }
 
-func ConfigurePulumi(instanceType string) (auto.Stack, context.Context) {
+func ConfigurePulumi(region, instanceType string) (auto.Stack, context.Context) {
 	ctx := context.Background()
 	projectName := "ec2-k3s"
 	stackName := "dev"
@@ -60,7 +60,7 @@ func ConfigurePulumi(instanceType string) (auto.Stack, context.Context) {
 	pterm.Success.Println("Successfully installed AWS plugin")
 
 	// Set stack configuration specifying the AWS region to deploy
-	stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: "us-east-1"})
+	stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: region})
 	pterm.Success.Println("Successfully set config")
 
 	// Refresh state
@@ -78,8 +78,8 @@ func ConfigurePulumi(instanceType string) (auto.Stack, context.Context) {
 }
 
 // Up provisions AWS infrastructure
-func Up(instanceType string) error {
-	pulumiStack, ctx := ConfigurePulumi(instanceType)
+func Up(region, instanceType string) error {
+	pulumiStack, ctx := ConfigurePulumi(region, instanceType)
 
 	// Wire up our update to stream progress to stdout
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
@@ -96,20 +96,20 @@ func Up(instanceType string) error {
 	pterm.Success.Println("Update succeeded!")
 
 	// Wait for ec2 instance to be ready
-	WaitInstanceReady()
+	// WaitInstanceReady()
 
 	// Create k3s cluster on ec2 instance
-	K3sUp()
+	// K3sUp()
 
 	// Wait for cluster node to be ready
-	K3sReady()
+	// K3sReady()
 
 	return nil
 }
 
 // Down tears down AWS infrastructure
-func Down(instanceType string) error {
-	pulumiStack, ctx := ConfigurePulumi(instanceType)
+func Down(region, instanceType string) error {
+	pulumiStack, ctx := ConfigurePulumi(region, instanceType)
 
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()

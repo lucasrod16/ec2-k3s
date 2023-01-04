@@ -9,7 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var o = &types.InstanceOptions{}
+var io = &types.InstanceOptions{}
+var co = &types.ConfigOptions{}
 
 // upCmd represents the up command
 var (
@@ -18,13 +19,14 @@ var (
 		Args:  cobra.MaximumNArgs(0),
 		Short: "Provision AWS infrastructure and k3s cluster",
 		Run: func(cmd *cobra.Command, args []string) {
-			infra.Up(o.InstanceType)
+			infra.Up(co.Region, io.InstanceType)
 		},
 	}
 )
 
 func init() {
-	upCmd.Flags().StringVar(&o.InstanceType, "instance-type", "t2.micro", "ec2 instance type to use")
+	upCmd.Flags().StringVar(&io.InstanceType, "instance-type", "t2.micro", "ec2 instance type to use")
+	upCmd.Flags().StringVar(&co.Region, "region", "", "AWS region to deploy to")
 
 	rootCmd.AddCommand(upCmd)
 }

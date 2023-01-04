@@ -14,3 +14,7 @@ type Infrastructure struct {
 type InstanceOptions struct {
 	InstanceType string
 }
+
+type ConfigOptions struct {
+	Region string
+}
