@@ -42,10 +42,12 @@
 
 ## Usage
 
-Clone the repository
+Clone the repository and change directories into it
 
 ```bash
 git clone https://github.com/lucasrod16/ec2-k3s.git
+
+cd ec2-k3s
 ```
 
 List Makefile targets
