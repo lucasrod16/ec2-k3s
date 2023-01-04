@@ -14,7 +14,7 @@ var downCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(0),
 	Short: "Teardown AWS infrastructure and k3s cluster",
 	Run: func(cmd *cobra.Command, args []string) {
-		infra.Down(o.InstanceType)
+		infra.Down(co.Region, io.InstanceType)
 	},
 }
 
