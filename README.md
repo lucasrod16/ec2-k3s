@@ -26,8 +26,6 @@
 
 ## Default Configuration
 
-- Uses the default region of the AWS profile that is used
-
 - `Ubuntu 22.04 LTS` AMI for the ec2 instance
 
 - Security group
