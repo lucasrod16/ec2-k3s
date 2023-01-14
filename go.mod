@@ -6,7 +6,7 @@ require (
 	github.com/alexellis/go-execute v0.5.0
 	github.com/aws/aws-sdk-go v1.44.180
 	github.com/briandowns/spinner v1.20.0
-	github.com/pterm/pterm v0.12.51
+	github.com/pterm/pterm v0.12.53
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.25.0
 	github.com/pulumi/pulumi/sdk/v3 v3.51.1
 	github.com/spf13/cobra v1.6.1
@@ -77,7 +77,7 @@ require (
 	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/tools v0.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20221201204527-e3fa12d562f3 // indirect
 	google.golang.org/grpc v1.51.0 // indirect
