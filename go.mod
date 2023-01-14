@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/alexellis/go-execute v0.5.0
-	github.com/aws/aws-sdk-go v1.44.171
+	github.com/aws/aws-sdk-go v1.44.180
 	github.com/briandowns/spinner v1.20.0
 	github.com/pterm/pterm v0.12.51
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.25.0
