@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash -o errexit -o pipefail -o nounset
 
 .PHONY: all
-all: clean build up
+all: clean build unit-test up
 
 .PHONY: help
 help: ## Display list of all targets
@@ -23,6 +23,9 @@ connect: ## Connect to ec2 instance via SSH
 down: ## Teardown cluster
 	./ec2-k3s down
 
+.PHONY: unit-test
+unit-test: ## Run unit tests
+	go test -failfast  -v ./...
 
 .PHONY: up
 up: ## Provision cluster
