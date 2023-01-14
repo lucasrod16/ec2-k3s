@@ -131,9 +131,8 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 }
 
 // GetInstanceIp returns the public IP address of the ec2 instance
-func GetInstanceIp() (string, error) {
-	client := utils.SetupEC2Client()
-
+func GetInstanceIp(region string) (string, error) {
+	client := utils.SetupEC2Client(region)
 	input := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
@@ -159,8 +158,8 @@ func GetInstanceIp() (string, error) {
 }
 
 // GetInstanceStatus returns the reachability status of the ec2 instance
-func GetInstanceStatus() (string, error) {
-	client := utils.SetupEC2Client()
+func GetInstanceStatus(region string) (string, error) {
+	client := utils.SetupEC2Client(region)
 
 	input := &ec2.DescribeInstanceStatusInput{
 		Filters: []*ec2.Filter{
@@ -190,14 +189,14 @@ func GetInstanceStatus() (string, error) {
 }
 
 // WaitInstanceReady waits for instance health checks to return "passed"
-func WaitInstanceReady() error {
+func WaitInstanceReady(region string) error {
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()
 
 	pterm.Info.Println("Waiting for ec2 instance to be ready...")
 
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
-		status, err := GetInstanceStatus()
+		status, err := GetInstanceStatus(region)
 		if err != nil {
 			return false, err
 		}

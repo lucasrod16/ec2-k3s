@@ -12,8 +12,8 @@ K3sUp creates a k3s cluster on ec2 instance via SSH
 and copies the kubeconfig to the directory where
 `ec2-k3s up` was executed.
 */
-func K3sUp() error {
-	publicIp, err := GetInstanceIp()
+func K3sUp(region string) error {
+	publicIp, err := GetInstanceIp(region)
 	if err != nil {
 		return err
 	}

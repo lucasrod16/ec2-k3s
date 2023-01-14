@@ -96,10 +96,10 @@ func Up(region, instanceType string) error {
 	pterm.Success.Println("Update succeeded!")
 
 	// Wait for ec2 instance to be ready
-	WaitInstanceReady()
+	WaitInstanceReady(region)
 
 	// Create k3s cluster on ec2 instance
-	K3sUp()
+	K3sUp(region)
 
 	// Wait for cluster node to be ready
 	K3sReady()

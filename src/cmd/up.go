@@ -28,5 +28,7 @@ func init() {
 	upCmd.Flags().StringVar(&io.InstanceType, "instance-type", "t2.micro", "ec2 instance type to use")
 	upCmd.Flags().StringVar(&co.Region, "region", "", "AWS region to deploy to")
 
+	upCmd.MarkFlagRequired("region")
+
 	rootCmd.AddCommand(upCmd)
 }

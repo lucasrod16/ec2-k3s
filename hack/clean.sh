@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf ./ec2-k3s
+go clean
 
 if [ -f "./kubeconfig" ]; then
     rm ./kubeconfig
