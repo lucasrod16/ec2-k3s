@@ -71,7 +71,7 @@ It can be executed by referencing it as `./ec2-k3s`
 Provision a k3s cluster in AWS
 
 ```bash
-./ec2-k3s up
+./ec2-k3s up --region <your-aws-region>
 ```
 
 By default, `ec2-k3s up` will use an ec2 instance type of `t2.micro`
@@ -82,12 +82,6 @@ To specify the ec2 instance type to use:
 
 ```bash
 ./ec2-k3s up --instance-type <instance-type>
-```
-
-To specify the AWS region to deploy to:
-
-```bash
-./ec2-k3s up --region <region>
 ```
 
 Teardown AWS infrastructure and k3s cluster
