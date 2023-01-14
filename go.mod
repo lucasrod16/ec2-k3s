@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.180
 	github.com/briandowns/spinner v1.20.0
 	github.com/pterm/pterm v0.12.53
-	github.com/pulumi/pulumi-aws/sdk/v5 v5.25.0
+	github.com/pulumi/pulumi-aws/sdk/v5 v5.27.0
 	github.com/pulumi/pulumi/sdk/v3 v3.51.1
 	github.com/spf13/cobra v1.6.1
 	k8s.io/apimachinery v0.26.0
