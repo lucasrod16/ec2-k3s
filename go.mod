@@ -3,13 +3,13 @@ module github.com/lucasrod16/ec2-k3s
 go 1.19
 
 require (
-	github.com/alexellis/go-execute v0.5.0
 	github.com/aws/aws-sdk-go v1.44.180
 	github.com/briandowns/spinner v1.20.0
 	github.com/pterm/pterm v0.12.53
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.27.0
 	github.com/pulumi/pulumi/sdk/v3 v3.51.1
 	github.com/spf13/cobra v1.6.1
+	golang.org/x/crypto v0.3.0
 	k8s.io/apimachinery v0.26.0
 )
 
@@ -72,7 +72,6 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.3.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
