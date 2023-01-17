@@ -40,6 +40,9 @@ func Up(region, instanceType string) error {
 		return err
 	}
 
+	// Copy kubeconfig from remote host to local machine
+	GetKubeconfig(region)
+
 	return nil
 }
 
@@ -70,8 +73,7 @@ func Down(region, instanceType string) error {
 func deployInfra(instanceType string) pulumi.RunFunc {
 	deployFunc := func(ctx *pulumi.Context) error {
 		// Create SSH keypair in AWS
-		_, err := CreateSSHKeyPair(ctx)
-		if err != nil {
+		if _, err := CreateSSHKeyPair(ctx); err != nil {
 			return err
 		}
 
@@ -120,12 +122,12 @@ func configurePulumi(region, instanceType string) (auto.Stack, context.Context) 
 	// Refresh state
 	s.Start()
 	pterm.Info.Println("Refreshing state...")
-	_, err := stack.Refresh(ctx)
-	s.Stop()
 
-	if err != nil {
+	if _, err := stack.Refresh(ctx); err != nil {
 		pterm.Fatal.Printf("%v\n", err)
 	}
+
+	s.Stop()
 	pterm.Success.Println("Refresh succeeded!")
 
 	return stack, ctx

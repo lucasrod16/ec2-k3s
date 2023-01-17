@@ -18,7 +18,7 @@ type SSHClient struct {
 // ExecuteCommand executes a command on a remote machine to install k3s
 type ExecuteCommand interface {
 	Execute(command string) (CommandOutput, error)
-	ExecuteStdio(command string) (CommandOutput, error)
+	ExecuteOutput(command string, stream bool) (CommandOutput, error)
 }
 
 // CommandOutput contains the STDIO output from running a command
@@ -42,7 +42,7 @@ func NewSSHClient(host string, config *ssh.ClientConfig) (*SSHClient, error) {
 	return &client, nil
 }
 
-// ExecuteStdio pipes the remote command output to local stdio
+// ExecuteOutput pipes the remote command output to local stdio
 func (s SSHClient) ExecuteOutput(command string, stream bool) (CommandOutput, error) {
 	sess, err := s.conn.NewSession()
 	if err != nil {
@@ -118,14 +118,6 @@ func ConfigureSSHClient(region string) (*SSHClient, error) {
 	user := "ubuntu"
 	privateKey := utils.GetPrivateSSHKey()
 
-	ip, err := utils.GetInstanceIp(region)
-	if err != nil {
-		return nil, err
-	}
-
-	port := "22"
-	host := ip + ":" + port
-
 	signer, err := ssh.ParsePrivateKey(privateKey)
 	if err != nil {
 		return nil, err
@@ -139,10 +131,27 @@ func ConfigureSSHClient(region string) (*SSHClient, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
+	host, err := getHost(region)
+	if err != nil {
+		return nil, err
+	}
+
 	sshClient, err := NewSSHClient(host, config)
 	if err != nil {
 		return nil, err
 	}
 
 	return sshClient, nil
+}
+
+func getHost(region string) (string, error) {
+	ip, err := utils.GetInstanceIp(region)
+	if err != nil {
+		return "", err
+	}
+
+	port := "22"
+	host := ip + ":" + port
+
+	return host, nil
 }
