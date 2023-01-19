@@ -10,7 +10,7 @@ require (
 	github.com/pulumi/pulumi/sdk/v3 v3.51.1
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/crypto v0.5.0
-	k8s.io/apimachinery v0.26.0
+	k8s.io/apimachinery v0.26.1
 )
 
 require (
