@@ -9,11 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var instanceOptions = &types.InstanceOptions{}
-var configOptions = &types.ConfigOptions{}
-
-var instanceType = instanceOptions.InstanceType
-var region = configOptions.Region
+var (
+	instanceOptions = &types.InstanceOptions{}
+	configOptions   = &types.ConfigOptions{}
+	instanceType    = instanceOptions.InstanceType
+	region          = configOptions.Region
+)
 
 // upCmd represents the up command
 var (
