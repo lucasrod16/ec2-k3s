@@ -19,14 +19,14 @@ clean: ## Delete compiled binary from root directory
 connect: ## Connect to ec2 instance via SSH
 	hack/connect.sh
 
-.PHONY: down
-down: ## Teardown cluster
+.PHONY:
+down: clean build ## Teardown cluster
 	./ec2-k3s down
 
 .PHONY: unit-test
 unit-test: ## Run unit tests
 	go test -failfast  -v ./...
 
-.PHONY: up
-up: ## Provision cluster
+.PHONY:
+up: clean build ## Provision cluster
 	./ec2-k3s up --region us-east-1
