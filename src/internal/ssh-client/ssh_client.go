@@ -2,12 +2,14 @@ package ssh
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"sync"
 
 	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // SSHClient initializes a ssh client connection
@@ -118,7 +120,11 @@ func ConfigureSSHClient(region string) (*SSHClient, error) {
 	user := "ubuntu"
 	privateKey := utils.GetPrivateSSHKey()
 
-	signer, err := ssh.ParsePrivateKey(privateKey)
+	fmt.Println("Enter passphrase for '~/.ssh/id_rsa':")
+	STDIN := int(os.Stdin.Fd())
+	passwordBytes, _ := terminal.ReadPassword(STDIN)
+
+	signer, err := ssh.ParsePrivateKeyWithPassphrase(privateKey, passwordBytes)
 	if err != nil {
 		return nil, err
 	}
