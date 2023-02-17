@@ -2,11 +2,11 @@ package infra
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/pterm/pterm"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
@@ -21,14 +21,11 @@ func Up(region, instanceType string) error {
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
 
 	// Run the update to deploy our infrastructure
-	s.Start()
-	pterm.Info.Println("Updating stack...")
 	if _, err := pulumiStack.Up(ctx, stdoutStreamer); err != nil {
 		return err
 	}
-	s.Stop()
 
-	pterm.Success.Println("Update succeeded!")
+	fmt.Println("Update succeeded!")
 
 	// Wait for ec2 instance to be ready
 	if err := WaitInstanceReady(region); err != nil {
@@ -53,7 +50,7 @@ func Down(region, instanceType string) error {
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()
 
-	pterm.Info.Println("Destroying the stack...")
+	fmt.Println("Destroying the stack...")
 
 	// Wire up our destroy to stream progress to stdout
 	stdoutStreamer := optdestroy.ProgressStreams(os.Stdout)
@@ -65,7 +62,7 @@ func Down(region, instanceType string) error {
 
 	s.Stop()
 
-	pterm.Success.Println("Stack successfully destroyed!")
+	fmt.Println("Stack successfully destroyed!")
 
 	return nil
 }
@@ -103,32 +100,19 @@ func configurePulumi(region, instanceType string) (auto.Stack, context.Context) 
 
 	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra(instanceType))
 
-	pterm.Info.Println("Created/Selected stack " + stackName)
-
 	workspace := stack.Workspace()
 
 	// For inline source programs, we must manage plugins ourselves
-	s.Start()
-	pterm.Info.Println("Installing AWS plugin...")
 	workspace.InstallPlugin(ctx, "aws", "v5.25.0")
-	s.Stop()
-
-	pterm.Success.Println("Successfully installed AWS plugin")
 
 	// Set stack configuration specifying the AWS region to deploy
 	stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: region})
-	pterm.Success.Println("Successfully set config")
 
 	// Refresh state
-	s.Start()
-	pterm.Info.Println("Refreshing state...")
-
 	if _, err := stack.Refresh(ctx); err != nil {
-		pterm.Fatal.Printf("%v\n", err)
+		fmt.Println("Failed to refresh state")
+		os.Exit(1)
 	}
-
-	s.Stop()
-	pterm.Success.Println("Refresh succeeded!")
 
 	return stack, ctx
 }
