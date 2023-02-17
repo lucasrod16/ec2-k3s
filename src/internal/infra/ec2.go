@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -8,7 +9,6 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/lucasrod16/ec2-k3s/src/internal/types"
 	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
-	"github.com/pterm/pterm"
 	"k8s.io/apimachinery/pkg/util/wait"
 
 	pec2 "github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
@@ -166,7 +166,7 @@ func WaitInstanceReady(region string) error {
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()
 
-	pterm.Info.Println("Waiting for ec2 instance to be ready...")
+	fmt.Println("Waiting for ec2 instance to be ready...")
 
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
 		status, err := GetInstanceStatus(region)
@@ -176,7 +176,7 @@ func WaitInstanceReady(region string) error {
 
 		if status == "passed" {
 			s.Stop()
-			pterm.Success.Println("Instance is ready!")
+			fmt.Println("Instance is ready!")
 			return true, nil
 		}
 

@@ -7,7 +7,7 @@ require (
 	github.com/briandowns/spinner v1.21.0
 	github.com/pterm/pterm v0.12.54
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.29.1
-	github.com/pulumi/pulumi/sdk/v3 v3.54.0
+	github.com/pulumi/pulumi/sdk/v3 v3.55.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/crypto v0.6.0
 	k8s.io/apimachinery v0.26.1
