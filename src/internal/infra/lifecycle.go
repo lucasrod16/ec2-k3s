@@ -13,6 +13,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+const (
+	projectName      string = "ec2-k3s"
+	stackName        string = "dev"
+	awsPluginVersion string = "v5.25.0"
+)
+
 // Up provisions AWS infrastructure
 func Up(region, instanceType string) error {
 	pulumiStack, ctx := configurePulumi(region, instanceType)
@@ -95,15 +101,13 @@ func deployInfra(instanceType string) pulumi.RunFunc {
 
 func configurePulumi(region, instanceType string) (auto.Stack, context.Context) {
 	ctx := context.Background()
-	projectName := "ec2-k3s"
-	stackName := "dev"
 
 	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra(instanceType))
 
 	workspace := stack.Workspace()
 
 	// For inline source programs, we must manage plugins ourselves
-	workspace.InstallPlugin(ctx, "aws", "v5.25.0")
+	workspace.InstallPlugin(ctx, "aws", awsPluginVersion)
 
 	// Set stack configuration specifying the AWS region to deploy
 	stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: region})

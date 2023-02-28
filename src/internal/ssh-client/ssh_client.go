@@ -12,6 +12,11 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+const (
+	sshPort string = "22"
+	ec2User string = "ubuntu"
+)
+
 // SSHClient initializes a ssh client connection
 type SSHClient struct {
 	conn *ssh.Client
@@ -117,7 +122,6 @@ func (s SSHClient) Close() error {
 // ConfigureSSHClient configures a ssh client
 // with a user, host, and ssh keys
 func ConfigureSSHClient(region string) (*SSHClient, error) {
-	user := "ubuntu"
 	privateKey := utils.GetPrivateSSHKey()
 
 	fmt.Println("Enter passphrase for '~/.ssh/id_rsa':")
@@ -130,7 +134,7 @@ func ConfigureSSHClient(region string) (*SSHClient, error) {
 	}
 
 	config := &ssh.ClientConfig{
-		User: user,
+		User: ec2User,
 		Auth: []ssh.AuthMethod{
 			ssh.PublicKeys(signer),
 		},
@@ -156,8 +160,7 @@ func getHost(region string) (string, error) {
 		return "", err
 	}
 
-	port := "22"
-	host := ip + ":" + port
+	host := ip + ":" + sshPort
 
 	return host, nil
 }

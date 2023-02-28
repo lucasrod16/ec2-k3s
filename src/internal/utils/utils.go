@@ -7,10 +7,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+)
+
+const (
+	publicKeyFile  string = ".ssh/id_rsa.pub"
+	privateKeyFile string = ".ssh/id_rsa"
 )
 
 // DerefString Dereferences string pointers to strings
@@ -29,7 +35,7 @@ func GetPublicSSHKey() []byte {
 		panic(err)
 	}
 
-	publicSSHKey := userHomeDir + "/.ssh/id_rsa.pub"
+	publicSSHKey := path.Join(userHomeDir, publicKeyFile)
 	keyData, err := os.ReadFile(publicSSHKey)
 	if err != nil {
 		log.Panicf("Failed reading data from public ssh key: %s", err)
@@ -45,7 +51,7 @@ func GetPrivateSSHKey() []byte {
 		panic(err)
 	}
 
-	privateSSHKey := userHomeDir + "/.ssh/id_rsa"
+	privateSSHKey := path.Join(userHomeDir, privateKeyFile)
 	keyData, err := os.ReadFile(privateSSHKey)
 	if err != nil {
 		log.Panicf("Failed reading data from private ssh key: %s", err)

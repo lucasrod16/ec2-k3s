@@ -2,6 +2,7 @@ package infra
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -80,9 +81,9 @@ func writeKubeconfig(data []byte) error {
 		return err
 	}
 
-	fileName := absPath + "/kubeconfig"
+	filePath := path.Join(absPath, "kubeconfig")
 
-	if err := os.WriteFile(fileName, []byte(data), 0600); err != nil {
+	if err := os.WriteFile(filePath, []byte(data), 0600); err != nil {
 		return err
 	}
 

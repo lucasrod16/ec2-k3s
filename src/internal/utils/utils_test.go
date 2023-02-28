@@ -51,7 +51,6 @@ func TestDerefString(t *testing.T) {
 	if expected != got {
 		t.Errorf("error DerefString(): expected: %s | got: %s", expected, got)
 	}
-
 }
 
 // TestPublicSSHKey mocks a filesystem and tests that we can read data from a public ssh key
@@ -75,7 +74,6 @@ func TestPublicSSHKey(t *testing.T) {
 	if expected != got {
 		t.Errorf("expected: %s | got: %s", expected, got)
 	}
-
 }
 
 // TestPrivateSSHKey mocks a filesystem and tests that we can read data from a private ssh key
@@ -99,5 +97,4 @@ func TestPrivateSSHKey(t *testing.T) {
 	if expected != got {
 		t.Errorf("expected: %s | got: %s", expected, got)
 	}
-
 }
