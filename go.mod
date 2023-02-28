@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/aws/aws-sdk-go v1.44.209
-	github.com/briandowns/spinner v1.21.0
+	github.com/briandowns/spinner v1.22.0
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.30.0
 	github.com/pulumi/pulumi/sdk/v3 v3.55.0
 	github.com/spf13/cobra v1.6.1
