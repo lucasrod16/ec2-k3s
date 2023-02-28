@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/briandowns/spinner"
 	"github.com/lucasrod16/ec2-k3s/src/internal/types"
 	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
@@ -104,13 +102,13 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	ami, err := pec2.LookupAmi(ctx, &pec2.LookupAmiArgs{
 		MostRecent: pulumi.BoolRef(true),
 		Filters: []pec2.GetAmiFilter{
-			pec2.GetAmiFilter{
+			{
 				Name: "name",
 				Values: []string{
 					"ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*",
 				},
 			},
-			pec2.GetAmiFilter{
+			{
 				Name: "virtualization-type",
 				Values: []string{
 					"hvm",
@@ -130,37 +128,6 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	}, nil
 }
 
-// GetInstanceStatus returns the reachability status of the ec2 instance
-func GetInstanceStatus(region string) (string, error) {
-	client := utils.SetupEC2Client(region)
-
-	input := &ec2.DescribeInstanceStatusInput{
-		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("instance-status.reachability"),
-				Values: []*string{
-					aws.String("passed"),
-					aws.String("failed"),
-					aws.String("initializing"),
-					aws.String("insufficient-data"),
-				},
-			},
-		},
-	}
-
-	// Describe the status of running instances
-	result, err := client.DescribeInstanceStatus(input)
-	if err != nil {
-		return "", err
-	}
-
-	// Convert string pointer to string
-	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
-	instanceStatus := utils.DerefString(instanceStatusPointer)
-
-	return instanceStatus, nil
-}
-
 // WaitInstanceReady waits for instance health checks to return "passed"
 func WaitInstanceReady(region string) error {
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
@@ -169,7 +136,7 @@ func WaitInstanceReady(region string) error {
 	fmt.Println("Waiting for ec2 instance to be ready...")
 
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
-		status, err := GetInstanceStatus(region)
+		status, err := utils.GetInstanceStatus(region)
 		if err != nil {
 			return false, err
 		}

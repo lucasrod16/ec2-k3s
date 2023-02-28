@@ -61,10 +61,9 @@ func GetKubeconfig(region string) error {
 	}
 
 	return nil
-
 }
 
-// Edit kubeconfig file with IP and port number of ec2 instance to connect to
+// Edit kubeconfig file with public IP of ec2 instance to connect to
 func editKubeconfig(kubeconfig string, ip string) []byte {
 	kubeconfigChanges := strings.NewReplacer(
 		"127.0.0.1", ip,
