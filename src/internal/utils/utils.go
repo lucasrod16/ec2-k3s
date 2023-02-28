@@ -85,6 +85,37 @@ func SetupEC2Client(region string) *ec2.EC2 {
 	return svc
 }
 
+// GetInstanceStatus returns the reachability status of the ec2 instance
+func GetInstanceStatus(region string) (string, error) {
+	client := SetupEC2Client(region)
+
+	input := &ec2.DescribeInstanceStatusInput{
+		Filters: []*ec2.Filter{
+			{
+				Name: aws.String("instance-status.reachability"),
+				Values: []*string{
+					aws.String("passed"),
+					aws.String("failed"),
+					aws.String("initializing"),
+					aws.String("insufficient-data"),
+				},
+			},
+		},
+	}
+
+	// Describe the status of running instances
+	result, err := client.DescribeInstanceStatus(input)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert string pointer to string
+	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
+	instanceStatus := DerefString(instanceStatusPointer)
+
+	return instanceStatus, nil
+}
+
 // GetInstanceIp returns the public IP address of the ec2 instance
 func GetInstanceIp(region string) (string, error) {
 	client := SetupEC2Client(region)
