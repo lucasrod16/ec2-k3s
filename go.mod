@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.209
 	github.com/briandowns/spinner v1.22.0
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.30.0
-	github.com/pulumi/pulumi/sdk/v3 v3.55.0
+	github.com/pulumi/pulumi/sdk/v3 v3.57.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/crypto v0.6.0
 	k8s.io/apimachinery v0.26.1
@@ -25,8 +25,8 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
-	github.com/go-git/go-billy/v5 v5.3.1 // indirect
-	github.com/go-git/go-git/v5 v5.5.1 // indirect
+	github.com/go-git/go-billy/v5 v5.4.0 // indirect
+	github.com/go-git/go-git/v5 v5.6.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/opentracing/basictracer-go v1.1.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
-	github.com/pjbgf/sha1cd v0.2.3 // indirect
+	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/term v1.1.0 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
