@@ -25,7 +25,7 @@ func InstallK3s(region string) error {
 		return err
 	}
 
-	installK3sCommand := "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--tls-san " + ip + "' sh -s -"
+	installK3sCommand := "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--tls-san=" + ip + "' sh -s - --disable traefik"
 
 	if _, err = sshClient.Execute(installK3sCommand); err != nil {
 		return err

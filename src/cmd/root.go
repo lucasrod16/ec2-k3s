@@ -6,6 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var configFilePath string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ec2-k3s",
@@ -24,4 +26,6 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVarP(&configFilePath, "config", "f", "", "path to config file")
+	rootCmd.MarkPersistentFlagRequired("config")
 }

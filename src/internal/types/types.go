@@ -11,10 +11,7 @@ type Infrastructure struct {
 	Server        *ec2.Instance
 }
 
-type InstanceOptions struct {
-	InstanceType string
-}
-
-type ConfigOptions struct {
-	Region string
+type ConfigFile struct {
+	Region       string `json:"region" yaml:"region"`
+	InstanceType string `json:"instanceType" yaml:"instanceType"`
 }

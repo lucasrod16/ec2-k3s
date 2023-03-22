@@ -17,3 +17,4 @@
 kubeconfig*
 ec2-k3s*
 Pulumi.y*ml*
+config.yaml
