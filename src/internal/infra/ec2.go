@@ -84,8 +84,8 @@ func CreateInstance(ctx *pulumi.Context, instanceType string) (*types.Infrastruc
 		KeyName:             pulumi.String("ec2-k3s-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
-			"Name":         pulumi.String("ec2-k3s"),
-			"Cluster-type": pulumi.String("k3s"),
+			"Name":  pulumi.String(utils.GetCurrentUser() + "-dev"),
+			"Owner": pulumi.String(utils.InstanceOwner),
 		},
 	})
 	if err != nil {

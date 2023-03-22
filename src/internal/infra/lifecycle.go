@@ -92,6 +92,7 @@ func deployInfra(instanceType string) pulumi.RunFunc {
 		ctx.Export("Hostname", infra.Server.PublicDns)
 		ctx.Export("Instance Type", infra.Server.InstanceType)
 		ctx.Export("AMI ID", infra.Server.Ami)
+		ctx.Export("Instance Tags", infra.Server.Tags)
 
 		return nil
 	}

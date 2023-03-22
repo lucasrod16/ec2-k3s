@@ -7,7 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/user"
 	"path"
+
+	"crypto/sha256"
+	"encoding/hex"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -18,6 +22,8 @@ const (
 	publicKeyFile  string = ".ssh/id_rsa.pub"
 	privateKeyFile string = ".ssh/id_rsa"
 )
+
+var InstanceOwner string = createInstanceOwnerTag()
 
 // DerefString Dereferences string pointers to strings
 func DerefString(s *string) string {
@@ -94,8 +100,15 @@ func SetupEC2Client(region string) *ec2.EC2 {
 // GetInstanceStatus returns the reachability status of the ec2 instance
 func GetInstanceStatus(region string) (string, error) {
 	client := SetupEC2Client(region)
+	instanceId, err := getInstanceId(region)
+	if err != nil {
+		return "", err
+	}
 
 	input := &ec2.DescribeInstanceStatusInput{
+		InstanceIds: []*string{
+			aws.String(instanceId),
+		},
 		Filters: []*ec2.Filter{
 			{
 				Name: aws.String("instance-status.reachability"),
@@ -125,18 +138,18 @@ func GetInstanceStatus(region string) (string, error) {
 // GetInstanceIp returns the public IP address of the ec2 instance
 func GetInstanceIp(region string) (string, error) {
 	client := SetupEC2Client(region)
+	instanceId, err := getInstanceId(region)
+	if err != nil {
+		return "", err
+	}
+
 	input := &ec2.DescribeInstancesInput{
-		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("ip-address"),
-				Values: []*string{
-					aws.String("*"),
-				},
-			},
+		InstanceIds: []*string{
+			aws.String(instanceId),
 		},
 	}
 
-	// Describe the status of running instances
+	// Get the IP address of the EC2 instance
 	result, err := client.DescribeInstances(input)
 	if err != nil {
 		return "", err
@@ -147,4 +160,55 @@ func GetInstanceIp(region string) (string, error) {
 	publicIpAddress := DerefString(publicIpAddressPointer)
 
 	return publicIpAddress, nil
+}
+
+func getInstanceId(region string) (string, error) {
+	client := SetupEC2Client(region)
+	input := &ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			{
+				Name: aws.String("tag:Owner"),
+				Values: []*string{
+					aws.String(InstanceOwner),
+				},
+			},
+		},
+	}
+
+	// Get the instance ID of the EC2 instance
+	result, err := client.DescribeInstances(input)
+	if err != nil {
+		return "", err
+	}
+
+	instanceIdPointer := result.Reservations[0].Instances[0].InstanceId
+	instanceId := DerefString(instanceIdPointer)
+
+	return instanceId, nil
+}
+
+// createInstanceOwnerName creates a unique name for the ec2 instance owner tag value
+func createInstanceOwnerTag() string {
+	instanceOwner := GetCurrentUser() + "-" + createHash()
+
+	return instanceOwner
+}
+
+func GetCurrentUser() string {
+	userData, err := user.Current()
+	if err != nil {
+		fmt.Println("failed to get the current user's name")
+		os.Exit(1)
+	}
+	userName := userData.Username
+
+	return userName
+}
+
+// createHash creates a unique hash
+func createHash() string {
+	hasher := sha256.New()
+	stringHash := hex.EncodeToString(hasher.Sum(nil))
+
+	return stringHash
 }
