@@ -40,21 +40,19 @@
 
 ## Usage
 
-Clone the repository and change directories into it
+### Clone the repository and change directories into it
 
 ```bash
-git clone https://github.com/lucasrod16/ec2-k3s.git
-
-cd ec2-k3s
+git clone https://github.com/lucasrod16/ec2-k3s.git && cd ec2-k3s
 ```
 
-List Makefile targets
+### List Makefile targets
 
 ```bash
 make help
 ```
 
-Build from source
+### Build from source
 
 The build step outputs the binary in the current working directory
 
@@ -64,24 +62,27 @@ make build
 
 It can be executed by referencing it as `./ec2-k3s`
 
+### Create a config file
+
+The config file can be YAML or JSON
+
+The `region` and `instanceType` fields are required
+
+To view a full list of instance type options, see [here](https://aws.amazon.com/ec2/instance-types/)
+
+```yaml
+region: us-east-1
+instanceType: t2.micro
+```
+
 Provision a k3s cluster in AWS
 
 ```bash
-./ec2-k3s up --region <your-aws-region>
-```
-
-By default, `ec2-k3s up` will use an ec2 instance type of `t2.micro`
-
-To view a full list of options, see [here](https://aws.amazon.com/ec2/instance-types/)
-
-To specify the ec2 instance type to use:
-
-```bash
-./ec2-k3s up --instance-type <instance-type>
+./ec2-k3s up -f config.yaml
 ```
 
 Teardown AWS infrastructure and k3s cluster
 
 ```bash
-./ec2-k3s down
+./ec2-k3s down -f config.yaml
 ```
