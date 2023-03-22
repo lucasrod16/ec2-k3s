@@ -162,6 +162,7 @@ func GetInstanceIp(region string) (string, error) {
 	return publicIpAddress, nil
 }
 
+// getInstanceId gets the instance ID of the EC2 instance
 func getInstanceId(region string) (string, error) {
 	client := SetupEC2Client(region)
 	input := &ec2.DescribeInstancesInput{
