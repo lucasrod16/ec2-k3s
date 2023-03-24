@@ -54,7 +54,7 @@ func CreateSecurityGroup(ctx *pulumi.Context) (*types.Infrastructure, error) {
 // CreateSSHKeyPair creates an SSH keypair in AWS
 func CreateSSHKeyPair(ctx *pulumi.Context) (*types.Infrastructure, error) {
 	keypair, err := pec2.NewKeyPair(ctx, "ssh-keypair", &pec2.KeyPairArgs{
-		KeyName:   pulumi.String("ec2-k3s-keypair"),
+		KeyName:   pulumi.String(utils.GetCurrentUser() + "-dev-keypair"),
 		PublicKey: pulumi.String(utils.GetPublicSSHKey()),
 	})
 	if err != nil {
