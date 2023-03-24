@@ -81,7 +81,7 @@ func CreateInstance(ctx *pulumi.Context, instanceType string) (*types.Infrastruc
 	server, err := pec2.NewInstance(ctx, "ec2-instance", &pec2.InstanceArgs{
 		Ami:                 pulumi.String(computeInfra.Ami.ImageId),
 		InstanceType:        pulumi.String(instanceType),
-		KeyName:             pulumi.String("ec2-k3s-keypair"),
+		KeyName:             pulumi.String(utils.GetCurrentUser() + "-dev-keypair"),
 		VpcSecurityGroupIds: pulumi.StringArray{securityInfra.SecurityGroup.ID()},
 		Tags: pulumi.StringMap{
 			"Name":  pulumi.String(utils.GetCurrentUser() + "-dev"),
