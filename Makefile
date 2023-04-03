@@ -21,7 +21,7 @@ connect: ## Connect to ec2 instance via SSH
 
 .PHONY:
 down: clean build ## Teardown cluster
-	./ec2-k3s down
+	./ec2-k3s down -f ~/.config.yaml
 
 .PHONY: unit-test
 unit-test: ## Run unit tests
@@ -29,4 +29,4 @@ unit-test: ## Run unit tests
 
 .PHONY:
 up: clean build ## Provision cluster
-	./ec2-k3s up --region us-east-1
+	./ec2-k3s up -f ~/.config.yaml
