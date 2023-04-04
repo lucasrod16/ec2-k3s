@@ -10,12 +10,10 @@ import (
 	"os/user"
 	"path"
 
-	"crypto/sha256"
-	"encoding/hex"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/google/uuid"
 )
 
 const (
@@ -23,16 +21,9 @@ const (
 	privateKeyFile string = ".ssh/id_rsa"
 )
 
-var InstanceOwner string = createInstanceOwnerTag()
-
-// DerefString Dereferences string pointers to strings
-func DerefString(s *string) string {
-	if s != nil {
-		return *s
-	}
-
-	return ""
-}
+var (
+	InstanceOwner string = createInstanceOwnerTag()
+)
 
 // GetPublicSSHKey returns the public ssh key at ~/.ssh/id_rsa.pub
 func GetPublicSSHKey() []byte {
@@ -109,17 +100,6 @@ func GetInstanceStatus(region string) (string, error) {
 		InstanceIds: []*string{
 			aws.String(instanceId),
 		},
-		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("instance-status.reachability"),
-				Values: []*string{
-					aws.String("passed"),
-					aws.String("failed"),
-					aws.String("initializing"),
-					aws.String("insufficient-data"),
-				},
-			},
-		},
 	}
 
 	// Describe the status of running instances
@@ -130,7 +110,7 @@ func GetInstanceStatus(region string) (string, error) {
 
 	// Convert string pointer to string
 	instanceStatusPointer := result.InstanceStatuses[0].InstanceStatus.Details[0].Status
-	instanceStatus := DerefString(instanceStatusPointer)
+	instanceStatus := aws.StringValue(instanceStatusPointer)
 
 	return instanceStatus, nil
 }
@@ -157,7 +137,7 @@ func GetInstanceIp(region string) (string, error) {
 
 	// Convert string pointer to string
 	publicIpAddressPointer := result.Reservations[0].Instances[0].PublicIpAddress
-	publicIpAddress := DerefString(publicIpAddressPointer)
+	publicIpAddress := aws.StringValue(publicIpAddressPointer)
 
 	return publicIpAddress, nil
 }
@@ -182,14 +162,14 @@ func getInstanceId(region string) (string, error) {
 	}
 
 	instanceIdPointer := result.Reservations[0].Instances[0].InstanceId
-	instanceId := DerefString(instanceIdPointer)
+	instanceId := aws.StringValue(instanceIdPointer)
 
 	return instanceId, nil
 }
 
 // createInstanceOwnerName creates a unique name for the ec2 instance owner tag value
 func createInstanceOwnerTag() string {
-	instanceOwner := GetCurrentUser() + "-" + createHash()
+	instanceOwner := GetCurrentUser() + "-" + createUUID()
 
 	return instanceOwner
 }
@@ -205,10 +185,10 @@ func GetCurrentUser() string {
 	return userName
 }
 
-// createHash creates a unique hash
-func createHash() string {
-	hasher := sha256.New()
-	stringHash := hex.EncodeToString(hasher.Sum(nil))
+// createUUID creates a uuid
+func createUUID() string {
+	uuid := uuid.New()
+	uuidString := fmt.Sprintf("%v", uuid)
 
-	return stringHash
+	return uuidString
 }
