@@ -44,16 +44,14 @@ jobs:
         run: make build
 
       - name: Provision Infrastructure
-        id: provision_infra
         continue-on-error: true
         run: make up
 
-      - name: Teardown Infrastructure
+      - name: Test Cluster Access
+        continue-on-error: true
         run: |
-          make down
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          kubectl get pods -A --kubeconfig=./kubeconfig
 
-      - name: Log Error
-        if: ${{ failure() }} && steps.provision_infra.conclusion == 'failure' }}
-        run: |
-          echo "::warning::Error occurred while attempting to provision the infrastructure."
-          echo "::warning::'Provision Infrastructure' failed with an error. Please investigate."
+      - name: Teardown Infrastructure
+        run: make down
