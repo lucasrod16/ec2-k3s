@@ -167,7 +167,7 @@ func getInstanceId(region string) (string, error) {
 	return instanceId, nil
 }
 
-// createInstanceOwnerName creates a unique name for the ec2 instance owner tag value
+// createInstanceOwnerTag creates a unique name for the ec2 instance owner tag value
 func createInstanceOwnerTag() string {
 	instanceOwner := GetCurrentUser() + "-" + createUUID()
 
