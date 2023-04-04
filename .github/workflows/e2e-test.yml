@@ -51,7 +51,7 @@ jobs:
         continue-on-error: true
         run: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-          kubectl get pods -A --kubeconfig=./kubeconfig
+          kubectl get nodes --kubeconfig=./kubeconfig
 
       - name: Teardown Infrastructure
         run: make down
