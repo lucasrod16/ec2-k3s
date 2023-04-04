@@ -7,7 +7,6 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/lucasrod16/ec2-k3s/src/internal/types"
 	"github.com/lucasrod16/ec2-k3s/src/internal/utils"
-	"k8s.io/apimachinery/pkg/util/wait"
 
 	pec2 "github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ec2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -130,28 +129,37 @@ func getUbuntuAMI(ctx *pulumi.Context) (*types.Infrastructure, error) {
 
 // WaitInstanceReady waits for instance health checks to return "passed"
 func WaitInstanceReady(region string) error {
+	// Set the timeout
+	timeout := 5 * time.Minute
+
+	// Set the start time for the timeout
+	startTime := time.Now()
+
 	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
 	s.Start()
 
 	fmt.Println("Waiting for ec2 instance to be ready...")
 
-	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
+	for {
+		// Check the status of the instance
 		status, err := utils.GetInstanceStatus(region)
 		if err != nil {
-			return false, err
+			return err
 		}
 
+		// Check if the instance status is "passed"
 		if status == "passed" {
 			s.Stop()
 			fmt.Println("Instance is ready!")
-			return true, nil
+			return nil
 		}
 
-		return false, nil
-	})
-	if err != nil {
-		return err
-	}
+		// If the timeout has been reached, return an error
+		if time.Since(startTime) >= timeout {
+			return fmt.Errorf("timed out waiting for instance status to be 'passed'")
+		}
 
-	return nil
+		// Wait for 3 seconds before checking again
+		time.Sleep(3 * time.Second)
+	}
 }
