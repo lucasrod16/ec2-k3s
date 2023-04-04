@@ -24,7 +24,7 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Configure aws cli
+      - name: Configure AWS CLI
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -35,5 +35,21 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
           curl -fsSL https://get.pulumi.com | sh
-          pulumi help
           pulumi login
+
+      - name: Build the binary
+        run: make build
+
+      - name: Provision Infrastructure
+        continue-on-error: true
+        run: make up
+
+      - name: Teardown Infrastructure
+        run: |
+          make down
+
+      - name: Log Error
+        if: ${{ failure() }}
+        run: |
+          echo "::warning::Error occurred while attempting to provision the infrastructure."
+          echo "::warning::'Provision Infrastructure' failed with an error. Please investigate."

@@ -17,13 +17,13 @@ connect: ## Connect to ec2 instance via SSH
 	hack/connect.sh
 
 .PHONY:
-down: clean build ## Teardown cluster
-	./ec2-k3s down -f ~/.config.yaml
+down: ## Teardown cluster
+	./ec2-k3s down -f config.yaml
 
 .PHONY: unit-test
 unit-test: ## Run unit tests
 	go test -failfast  -v ./...
 
 .PHONY:
-up: clean build ## Provision cluster
-	./ec2-k3s up -f ~/.config.yaml
+up: ## Provision cluster
+	./ec2-k3s up -f config.yaml
