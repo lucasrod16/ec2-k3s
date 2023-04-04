@@ -37,10 +37,14 @@ jobs:
           curl -fsSL https://get.pulumi.com | sh
           pulumi login
 
-      - name: Build the binary
+      - name: Generate SSH Key
+        run: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+
+      - name: Build Binary
         run: make build
 
       - name: Provision Infrastructure
+        id: provision_infra
         continue-on-error: true
         run: make up
 
@@ -49,7 +53,7 @@ jobs:
           make down
 
       - name: Log Error
-        if: ${{ failure() }}
+        if: ${{ failure() }} && steps.provision_infra.conclusion == 'failure' }}
         run: |
           echo "::warning::Error occurred while attempting to provision the infrastructure."
           echo "::warning::'Provision Infrastructure' failed with an error. Please investigate."
