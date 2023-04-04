@@ -25,8 +25,9 @@ jobs:
           go-version-file: go.mod
 
       - name: Configure aws cli
-        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && \
-             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && \
+        run: |
+             aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
              aws configure set default.region us-east-1
 
       - name: Test aws cli
