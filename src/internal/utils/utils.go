@@ -29,13 +29,13 @@ var (
 func GetPublicSSHKey() []byte {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	publicSSHKey := path.Join(userHomeDir, publicKeyFile)
 	keyData, err := os.ReadFile(publicSSHKey)
 	if err != nil {
-		log.Panicf("Failed reading data from public ssh key: %s", err)
+		log.Fatalf("Failed reading data from public ssh key: %s", err)
 	}
 
 	return keyData
@@ -45,13 +45,13 @@ func GetPublicSSHKey() []byte {
 func GetPrivateSSHKey() []byte {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	privateSSHKey := path.Join(userHomeDir, privateKeyFile)
 	keyData, err := os.ReadFile(privateSSHKey)
 	if err != nil {
-		log.Panicf("Failed reading data from private ssh key: %s", err)
+		log.Fatalf("Failed reading data from private ssh key: %s", err)
 	}
 
 	return keyData
@@ -61,14 +61,14 @@ func GetPrivateSSHKey() []byte {
 func LocalIP() []byte {
 	resp, err := http.Get("https://checkip.amazonaws.com")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	trimmedBody := bytes.Trim(body, "\n")

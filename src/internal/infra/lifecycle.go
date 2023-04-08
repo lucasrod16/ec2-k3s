@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -115,8 +116,7 @@ func configurePulumi(region, instanceType string) (auto.Stack, context.Context) 
 
 	// Refresh state
 	if _, err := stack.Refresh(ctx); err != nil {
-		fmt.Println("Failed to refresh state")
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	return stack, ctx
