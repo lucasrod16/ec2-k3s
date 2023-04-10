@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.234
 	github.com/briandowns/spinner v1.23.0
 	github.com/google/uuid v1.1.2
-	github.com/pulumi/pulumi-aws/sdk/v5 v5.34.0
+	github.com/pulumi/pulumi-aws/sdk/v5 v5.35.0
 	github.com/pulumi/pulumi/sdk/v3 v3.60.1
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/crypto v0.7.0
