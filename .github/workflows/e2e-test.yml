@@ -41,7 +41,14 @@ jobs:
           pulumi login
 
       - name: Generate SSH Key
-        run: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: ssh-keygen -t rsa -b 4096 -f "$SSH_KEY" -N ""
+
+      - name: Add SSH Key Filepath to Config File
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: yq ".sshKeyPath = \"$SSH_KEY\"" -i config.yaml
 
       - name: Build Binary
         run: make build
