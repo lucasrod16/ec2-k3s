@@ -8,34 +8,50 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"path"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/google/uuid"
-	"github.com/lucasrod16/ec2-k3s/src/internal/types"
+)
+
+const (
+	publicKeyFile  string = ".ssh/id_rsa.pub"
+	privateKeyFile string = ".ssh/id_rsa"
 )
 
 var (
-	InstanceOwner = createInstanceOwnerTag()
-	cfg           = types.ConfigFile{}
+	InstanceOwner string = createInstanceOwnerTag()
 )
 
-// GetPublicSSHKey returns the public ssh key at the provided path.
+// GetPublicSSHKey returns the public ssh key at ~/.ssh/id_rsa.pub
 func GetPublicSSHKey() []byte {
-	keyData, err := os.ReadFile(cfg.SSHKeyPath + ".pub")
+	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	publicSSHKey := path.Join(userHomeDir, publicKeyFile)
+	keyData, err := os.ReadFile(publicSSHKey)
+	if err != nil {
+		log.Fatalf("Failed reading data from public ssh key: %s", err)
 	}
 
 	return keyData
 }
 
-// GetPrivateSSHKey returns the private ssh key at the provided path.
+// GetPrivateSSHKey returns the private ssh key at ~/.ssh/id_rsa
 func GetPrivateSSHKey() []byte {
-	keyData, err := os.ReadFile(cfg.SSHKeyPath)
+	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	privateSSHKey := path.Join(userHomeDir, privateKeyFile)
+	keyData, err := os.ReadFile(privateSSHKey)
+	if err != nil {
+		log.Fatalf("Failed reading data from private ssh key: %s", err)
 	}
 
 	return keyData
@@ -47,6 +63,7 @@ func LocalIP() []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
@@ -57,6 +74,8 @@ func LocalIP() []byte {
 	trimmedBody := bytes.Trim(body, "\n")
 	suffix := "/32"
 	cidr := append([]byte(trimmedBody), suffix...)
+
+	fmt.Printf("\nWorkstation IP address: %s", cidr)
 
 	return cidr
 }

@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var cfg = types.ConfigFile{}
+var configFile = types.ConfigFile{}
 
 // upCmd represents the up command
 var (
@@ -21,7 +21,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			readConfigFile()
 			validateConfigFile()
-			infra.Up(cfg.Region, cfg.InstanceType)
+			infra.Up(configFile.Region, configFile.InstanceType)
 		},
 	}
 )
@@ -37,23 +37,19 @@ func readConfigFile() {
 		log.Fatal(err)
 	}
 
-	err = yaml.Unmarshal(configBytes, &cfg)
+	err = yaml.Unmarshal(configBytes, &configFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 func validateConfigFile() {
-	if cfg.Region == "" {
+	if configFile.Region == "" {
 		log.Fatal("Region must be set")
 	}
 
-	if cfg.InstanceType == "" {
+	if configFile.InstanceType == "" {
 		log.Fatal("Instance type must be set")
-	}
-
-	if cfg.SSHKeyPath == "" {
-		log.Fatal("SSH key must be provided")
 	}
 }
 

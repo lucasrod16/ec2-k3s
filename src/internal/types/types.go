@@ -14,5 +14,4 @@ type Infrastructure struct {
 type ConfigFile struct {
 	Region       string `json:"region" yaml:"region"`
 	InstanceType string `json:"instanceType" yaml:"instanceType"`
-	SSHKeyPath   string `json:"sshKeyPath" yaml:"sshKeyPath"`
 }
