@@ -44,7 +44,7 @@ jobs:
         env:
           SSH_KEY_PATH: ${{ secrets.SSH_KEY_PATH }}
           SSH_KEY_FILE: ${{ secrets.SSH_KEY_FILE }}
-          SSH_KEY: ${SSH_KEY_PATH}${SSH_KEY_FILE}
+          SSH_KEY: "${{ env.SSH_KEY_PATH }}${{ env.SSH_KEY_FILE }}"
         run: |
           mkdir -p "$SSH_KEY_PATH"
           ssh-keygen -t rsa -b 4096 -f "$SSH_KEY" -N ""
@@ -53,7 +53,7 @@ jobs:
         env:
           SSH_KEY_PATH: ${{ secrets.SSH_KEY_PATH }}
           SSH_KEY_FILE: ${{ secrets.SSH_KEY_FILE }}
-          SSH_KEY: ${SSH_KEY_PATH}${SSH_KEY_FILE}
+          SSH_KEY: "${{ env.SSH_KEY_PATH }}${{ env.SSH_KEY_FILE }}"
         run: yq ".sshKeyPath = \"$SSH_KEY\"" -i config.yaml
 
       - name: Build Binary
