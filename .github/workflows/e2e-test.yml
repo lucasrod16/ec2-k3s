@@ -38,6 +38,7 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
           curl -fsSL https://get.pulumi.com | sh
+          pulumi version
           pulumi login
 
       - name: Generate SSH Key
