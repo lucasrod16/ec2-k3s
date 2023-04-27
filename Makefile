@@ -18,7 +18,7 @@ connect: ## Connect to ec2 instance via SSH
 
 .PHONY:
 down: ## Teardown cluster
-	./ec2-k3s down -f config.yaml
+	PULUMI_CONFIG_PASSPHRASE="" ./ec2-k3s down -f config.yaml
 
 .PHONY: unit-test
 unit-test: ## Run unit tests
@@ -26,4 +26,4 @@ unit-test: ## Run unit tests
 
 .PHONY:
 up: ## Provision cluster
-	./ec2-k3s up -f config.yaml
+	PULUMI_CONFIG_PASSPHRASE="" ./ec2-k3s up -f config.yaml

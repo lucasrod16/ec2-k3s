@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/google/uuid"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
@@ -16,9 +17,10 @@ import (
 
 const (
 	projectName      string = "ec2-k3s"
-	stackName        string = "dev"
-	awsPluginVersion string = "v5.25.0"
+	awsPluginVersion string = "v5.37.0"
 )
+
+var stackName string = "dev-" + uuid.NewString()
 
 // Up provisions AWS infrastructure
 func Up(region, instanceType string) error {
@@ -104,15 +106,22 @@ func deployInfra(instanceType string) pulumi.RunFunc {
 func configurePulumi(region, instanceType string) (auto.Stack, context.Context) {
 	ctx := context.Background()
 
-	stack, _ := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra(instanceType))
+	stack, err := auto.UpsertStackInlineSource(ctx, stackName, projectName, deployInfra(instanceType))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	workspace := stack.Workspace()
 
 	// For inline source programs, we must manage plugins ourselves
-	workspace.InstallPlugin(ctx, "aws", awsPluginVersion)
+	if err := workspace.InstallPlugin(ctx, "aws", awsPluginVersion); err != nil {
+		log.Fatal(err)
+	}
 
 	// Set stack configuration specifying the AWS region to deploy
-	stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: region})
+	if err := stack.SetConfig(ctx, "aws:region", auto.ConfigValue{Value: region}); err != nil {
+		log.Fatal(err)
+	}
 
 	// Refresh state
 	if _, err := stack.Refresh(ctx); err != nil {
