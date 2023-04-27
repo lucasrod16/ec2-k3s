@@ -34,12 +34,11 @@ jobs:
           aws configure set default.region us-east-1
 
       - name: Install and Configure Pulumi
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
           curl -fsSL https://get.pulumi.com | sh
           pulumi version
-          pulumi login
+          pulumi logout --all
+          pulumi login --local
 
       - name: Generate SSH Key
         run: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
