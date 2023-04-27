@@ -169,7 +169,7 @@ func getInstanceId(region string) (string, error) {
 
 // createInstanceOwnerTag creates a unique name for the ec2 instance owner tag value
 func createInstanceOwnerTag() string {
-	instanceOwner := GetCurrentUser() + "-" + createUUID()
+	instanceOwner := GetCurrentUser() + "-" + uuid.NewString()
 
 	return instanceOwner
 }
@@ -183,12 +183,4 @@ func GetCurrentUser() string {
 	userName := userData.Username
 
 	return userName
-}
-
-// createUUID creates a uuid
-func createUUID() string {
-	uuid := uuid.New()
-	uuidString := fmt.Sprintf("%v", uuid)
-
-	return uuidString
 }
