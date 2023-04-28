@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
-	"github.com/briandowns/spinner"
 	"github.com/google/uuid"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
@@ -16,11 +14,11 @@ import (
 )
 
 const (
-	projectName      string = "ec2-k3s"
+	stackName        string = "dev"
 	awsPluginVersion string = "v5.37.0"
 )
 
-var stackName string = "dev-" + uuid.NewString()
+var projectName string = "ec2-k3s-" + uuid.NewString()
 
 // Up provisions AWS infrastructure
 func Up(region, instanceType string) error {
@@ -33,8 +31,6 @@ func Up(region, instanceType string) error {
 	if _, err := pulumiStack.Up(ctx, stdoutStreamer); err != nil {
 		return err
 	}
-
-	fmt.Println("Update succeeded!")
 
 	// Wait for ec2 instance to be ready
 	if err := WaitInstanceReady(region); err != nil {
@@ -56,22 +52,22 @@ func Up(region, instanceType string) error {
 func Down(region, instanceType string) error {
 	pulumiStack, ctx := configurePulumi(region, instanceType)
 
-	s := spinner.New(spinner.CharSets[36], 1000*time.Millisecond)
-	s.Start()
-
-	fmt.Println("Destroying the stack...")
-
 	// Wire up our destroy to stream progress to stdout
 	stdoutStreamer := optdestroy.ProgressStreams(os.Stdout)
 
-	// Destroy our stack and exit early
+	// Destroy resources in the stack
 	if _, err := pulumiStack.Destroy(ctx, stdoutStreamer); err != nil {
 		return err
 	}
 
-	s.Stop()
+	opts := auto.LocalWorkspace{}
 
-	fmt.Println("Stack successfully destroyed!")
+	// Destroy the stack
+	if err := opts.RemoveStack(ctx, stackName); err != nil {
+		return err
+	}
+
+	fmt.Printf("Stack '%s' has been removed\n", stackName)
 
 	return nil
 }
