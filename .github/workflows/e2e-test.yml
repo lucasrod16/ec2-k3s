@@ -1,4 +1,4 @@
-name: E2E Tests
+name: E2E Test
 on:
   push:
     branches:
@@ -34,12 +34,11 @@ jobs:
           aws configure set default.region us-east-1
 
       - name: Install and Configure Pulumi
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
           curl -fsSL https://get.pulumi.com | sh
           pulumi version
-          pulumi login
+          pulumi logout --all
+          pulumi login --local
 
       - name: Generate SSH Key
         run: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
@@ -48,11 +47,9 @@ jobs:
         run: make build
 
       - name: Provision Infrastructure
-        continue-on-error: true
         run: make up
 
       - name: Test Cluster Access
-        continue-on-error: true
         run: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
           kubectl get nodes --kubeconfig=./kubeconfig
