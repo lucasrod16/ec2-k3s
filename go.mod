@@ -3,7 +3,7 @@ module github.com/lucasrod16/ec2-k3s
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.44.244
+	github.com/aws/aws-sdk-go v1.44.248
 	github.com/briandowns/spinner v1.23.0
 	github.com/google/uuid v1.3.0
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.35.0

@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/google/uuid"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
@@ -14,11 +13,10 @@ import (
 )
 
 const (
+	projectName      string = "ec2-k3s"
 	stackName        string = "dev"
 	awsPluginVersion string = "v5.37.0"
 )
-
-var projectName string = "ec2-k3s-" + uuid.NewString()
 
 // Up provisions AWS infrastructure
 func Up(region, instanceType string) error {
