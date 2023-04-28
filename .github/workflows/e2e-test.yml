@@ -56,3 +56,4 @@ jobs:
 
       - name: Teardown Infrastructure
         run: make down
+
