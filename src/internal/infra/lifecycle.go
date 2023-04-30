@@ -41,7 +41,9 @@ func Up(region, instanceType string) error {
 	}
 
 	// Copy kubeconfig from remote host to local machine
-	GetKubeconfig(region)
+	if err := GetKubeconfig(region); err != nil {
+		return err
+	}
 
 	return nil
 }
