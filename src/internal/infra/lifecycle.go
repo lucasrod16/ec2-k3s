@@ -15,7 +15,7 @@ import (
 const (
 	projectName      string = "ec2-k3s"
 	stackName        string = "dev"
-	awsPluginVersion string = "v5.37.0"
+	awsPluginVersion string = "v5.39.0"
 )
 
 // Up provisions AWS infrastructure
