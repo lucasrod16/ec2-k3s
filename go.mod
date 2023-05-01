@@ -7,7 +7,7 @@ require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/google/uuid v1.3.0
 	github.com/pulumi/pulumi-aws/sdk/v5 v5.38.0
-	github.com/pulumi/pulumi/sdk/v3 v3.64.0
+	github.com/pulumi/pulumi/sdk/v3 v3.65.1
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/crypto v0.8.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -64,7 +64,7 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/mod v0.8.0 // indirect
+	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/term v0.7.0 // indirect
